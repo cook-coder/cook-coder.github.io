@@ -13,9 +13,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>写程序的厨子</title>
-  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
-  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <title>[Mac] iterm2登录服务器每次都要输入passphrase怎么办? | 写程序的厨子</title>
+  <meta name="keywords" content="item2,passphrase | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="iterm2下保存passphrase的方法 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   
   <link rel="icon" href="/favicon.ico">
   
@@ -41,7 +41,7 @@
       
         <li class="nav-item">
           
-            <a href="/about" class="item-link active">关于</a>
+            <a href="/about" class="item-link">关于</a>
           
         </li>
       
@@ -65,13 +65,35 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>无标题</h1>
+          <h1>[Mac] iterm2登录服务器每次都要输入passphrase怎么办?</h1>
           <div class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年12月25日</time>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年12月21日</time>
             
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MacUser/">MacUser</a>/ <a class="article-category-link" href="/categories/MacUser/iterm2/">iterm2</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Mac Tips" class="tag">Mac Tips</a>
+
+
             
           </div>
-          
+          <h3 id="烦恼"><a href="#烦恼" class="headerlink" title="烦恼"></a>烦恼</h3><p>因为公司考虑安全性的问题，生成公私钥的时候设置了passphrase；然后每次ssh登录服务器的时候都会提示输入passphrase, 服务器一多就很烦，每次都要输入。</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><ol>
+<li>换个厉害一点的ssh客户端软件, 可以记录passphrase自动填写的那种。</li>
+<li>设置一下自己的~/.ssh/config文件，没有就直接创建一个config文件就好了。配置如下：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Host *</span><br><span class="line">    UseKeychain yes</span><br></pre></td></tr></table></figure>
+
         </section>
     </article>
     
@@ -87,6 +109,13 @@
   </div>
   <aside>
     
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#烦恼"><span class="toc-number">1.</span> <span class="toc-text">烦恼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方法"><span class="toc-number">2.</span> <span class="toc-text">解决方法</span></a></li></ol>
+        </div>
+    </div>
+    
   </aside>
 </main>
 
@@ -94,8 +123,8 @@
 <script type="text/javascript">
   /* * * CONFIGURATION VARIABLES * * */
   var disqus_shortname = "wild2pro";
-  var disqus_identifier = "http://wild2pro.com/about/index.html";
-  var disqus_url = "http://wild2pro.com/about/index.html";
+  var disqus_identifier = "http://wild2pro.com/iterm2KeepAskingPassphrase.html";
+  var disqus_url = "http://wild2pro.com/iterm2KeepAskingPassphrase.html";
 
   isAgent(getDisqus)
 
@@ -129,7 +158,6 @@
   }
 </script>
 <!-- disqus 公共JS代码 end -->
-
 
 
 

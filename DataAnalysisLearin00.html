@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>[笔记] 数据分析实战第一课 | 写程序的厨子</title>
+  <meta name="keywords" content="数据分析实战,数据分析学习 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="极客时间【数据分析实战45讲】的学习笔记第一讲, 数据分析概览。 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>[笔记] 数据分析实战第一课</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年12月27日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/数据分析/">数据分析</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#数据分析" class="tag">数据分析</a>
+
+
+            
+          </div>
+          <h2 id="学习之前的瞎BB"><a href="#学习之前的瞎BB" class="headerlink" title="学习之前的瞎BB"></a>学习之前的瞎BB</h2><p>我对数据分析感兴趣，其实是被折磨出来的。为什么呢？</p>
+<p>如果你是一个开发，那你一定经历过产品经理或者说需求方的“我觉得”，“我认为”；而且开发完成后也没有持续跟进效果，又开始“我觉得”，“我认为”。</p>
+<p>后来我开始了解一些推荐系统的知识，认知到了以数据来说话的思维模式，以结果为导向，不能停留在玄学层面的“我觉得”，“我认为”。</p>
+<p>再后来就是开始看一些数据分析的入门书，订阅了学习的专栏。</p>
+<h2 id="正式笔记"><a href="#正式笔记" class="headerlink" title="正式笔记"></a>正式笔记</h2><blockquote>
+<p>数据分析概览</p>
+</blockquote>
+<h3 id="数据分析的组成"><a href="#数据分析的组成" class="headerlink" title="数据分析的组成"></a>数据分析的组成</h3><ol>
+<li>数据采集<br>这是所有数据的来源</li>
+<li>数据挖掘<br>分析数据，挖掘商业价值</li>
+<li>数据可视化<br>让结果直观的展现</li>
+</ol>
+<h4 id="数据采集"><a href="#数据采集" class="headerlink" title="数据采集"></a>数据采集</h4><h5 id="数据源"><a href="#数据源" class="headerlink" title="数据源"></a>数据源</h5><ol>
+<li>开源数据源</li>
+<li>爬虫抓取</li>
+<li>日志采集</li>
+<li>传感器</li>
+</ol>
+<h5 id="工具使用"><a href="#工具使用" class="headerlink" title="工具使用"></a>工具使用</h5><ol>
+<li>八爪鱼</li>
+<li>火车头采集器</li>
+<li>搜集客</li>
+</ol>
+<h5 id="爬虫编写"><a href="#爬虫编写" class="headerlink" title="爬虫编写"></a>爬虫编写</h5><ol>
+<li>Selenium</li>
+<li>lxml</li>
+<li>Scrapy</li>
+<li>phantomjs</li>
+</ol>
+<h4 id="数据挖掘"><a href="#数据挖掘" class="headerlink" title="数据挖掘"></a>数据挖掘</h4><h5 id="数学基础"><a href="#数学基础" class="headerlink" title="数学基础"></a>数学基础</h5><ol>
+<li>概率论与数据统计</li>
+<li>线性代数</li>
+<li>图论</li>
+<li>最优化方法</li>
+</ol>
+<h5 id="十大算法"><a href="#十大算法" class="headerlink" title="十大算法"></a>十大算法</h5><ul>
+<li>分类算法: C4.5、朴素贝叶斯、SVM、KNN、Adaboost、CART</li>
+<li>聚类算法: K-Means、EM</li>
+<li>关联分析: Apriori</li>
+<li>连接分析: PageRank</li>
+</ul>
+<h5 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h5><ol>
+<li>商业理解</li>
+<li>数据理解</li>
+<li>数据准备</li>
+<li>模型建立</li>
+<li>模型评估</li>
+<li>上线发布</li>
+</ol>
+<h4 id="数据可视化"><a href="#数据可视化" class="headerlink" title="数据可视化"></a>数据可视化</h4><h5 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h5><ul>
+<li>Matplotlib</li>
+<li>Seaborn</li>
+</ul>
+<h5 id="第三方工具"><a href="#第三方工具" class="headerlink" title="第三方工具"></a>第三方工具</h5><ul>
+<li>微图</li>
+<li>DataV</li>
+<li>Data GIF Maker</li>
+</ul>
+<blockquote>
+<p>这是我摘录的一些<a href="/LearningMethod.html">高效学习思路</a>, 供大家参考, 共同进步。</p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习之前的瞎BB"><span class="toc-number">1.</span> <span class="toc-text">学习之前的瞎BB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正式笔记"><span class="toc-number">2.</span> <span class="toc-text">正式笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据分析的组成"><span class="toc-number">2.1.</span> <span class="toc-text">数据分析的组成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据采集"><span class="toc-number">2.1.1.</span> <span class="toc-text">数据采集</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#数据源"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">数据源</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#工具使用"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">工具使用</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#爬虫编写"><span class="toc-number">2.1.1.3.</span> <span class="toc-text">爬虫编写</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据挖掘"><span class="toc-number">2.1.2.</span> <span class="toc-text">数据挖掘</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#数学基础"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">数学基础</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#十大算法"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">十大算法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#基本流程"><span class="toc-number">2.1.2.3.</span> <span class="toc-text">基本流程</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据可视化"><span class="toc-number">2.1.3.</span> <span class="toc-text">数据可视化</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Python"><span class="toc-number">2.1.3.1.</span> <span class="toc-text">Python</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#第三方工具"><span class="toc-number">2.1.3.2.</span> <span class="toc-text">第三方工具</span></a></li></ol></li></ol></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/DataAnalysisLearin00.html";
+  var disqus_url = "http://wild2pro.com/DataAnalysisLearin00.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2018 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
