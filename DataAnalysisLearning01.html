@@ -18,10 +18,20 @@
   
     
   <title>【笔记】快速入门Python - 数据分析实战第二课 | 写程序的厨子</title>
+  <meta name="keywords" content="数据分析入门,Python入门 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
   <meta name="description" content="Python的快速入门笔记, 跟着敲一遍代码，基本就能掌握Python基础了。然后多用，熟能生巧。 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e9e3e1673126f293b95cbd6dd134e45d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
 </head>
 
 <body>
@@ -89,7 +99,7 @@
             
           </div>
           <h2 id="编辑器的选择"><a href="#编辑器的选择" class="headerlink" title="编辑器的选择"></a>编辑器的选择</h2><p>老鸟不必说，新手就是VSCode吧，我觉得挺好用的。先跑起来再说，工具而已，不罗列了。</p>
-<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><p>如果你刚接触python那就跟着敲一遍代码，基本就掌握了。剩下的就是熟练度的问题了。</p>
+<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><p>Python版本选择Python3吧，如果你刚接触python那就跟着敲一遍代码，基本就掌握了。剩下的就是熟练度的问题了。</p>
 <h3 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h3><p>代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># input &amp; output</span></span><br><span class="line">name = input(<span class="string">"What's your name?\n"</span>)</span><br><span class="line">sum = <span class="number">100</span>+<span class="number">100</span></span><br><span class="line">print(<span class="string">"Hello, %s"</span> %name)</span><br><span class="line">print(<span class="string">'sum = %d'</span> %sum)</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>简要说明：%s是字符串的占位符，%name是作为填充%s的值，%d是数字的占位符，对应的%sum来填充其值。更多的占位符类型可以在后面的使用中查阅文档。</p>

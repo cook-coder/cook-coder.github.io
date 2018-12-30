@@ -17,9 +17,9 @@
   <link rel="icon" href="/favicon.ico">
   
     
-  <title>自我介绍 | 写程序的厨子</title>
-  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
-  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <title>【笔记】初识NumPy | 写程序的厨子</title>
+  <meta name="keywords" content="数据分析入门,NumPy入门 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="数据分析 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -50,7 +50,7 @@
       
         <li class="nav-item">
           
-            <a href="/about" class="item-link active">关于</a>
+            <a href="/about" class="item-link">关于</a>
           
         </li>
       
@@ -74,14 +74,32 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>自我介绍</h1>
+          <h1>【笔记】初识NumPy</h1>
           <div class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年12月30日</time>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年12月29日</time>
             
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/数据分析/">数据分析</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#数据分析" class="tag">数据分析</a>
+
+  <a href="/tags/#NumPy" class="tag">NumPy</a>
+
+
             
           </div>
-          <p>大学学的电子信息工程。(学渣)<br>第一份工作干的电气二次的设计。(专业不搭边)<br>第二份工作搞网络营销。(没干正事，尽打杂了。)<br>感觉自己还是适合搞技术活，找了个培训机构开始学Java。<br>去小公司干外包。<br>加入当地的”互联网公司”，现在已经变成了技术支持部门了。</p>
-<p>野生菜鸡程序员;鼎力前行,争取早日修成正果。</p>
+          <p>标准python中，list可以保存任意对象。所以list里实际保存的是对象的指针。例如我们需要保存一个list [1,2,3],那么实际上，就需要有3个指针和3个整数对象。浪费了内存和计算时间。</p>
+<h2 id="使用NumPy让科学计算更高效"><a href="#使用NumPy让科学计算更高效" class="headerlink" title="使用NumPy让科学计算更高效"></a>使用NumPy让科学计算更高效</h2><h3 id="为什么要使用NumPy的数组结构而不是python标准库的list？"><a href="#为什么要使用NumPy的数组结构而不是python标准库的list？" class="headerlink" title="为什么要使用NumPy的数组结构而不是python标准库的list？"></a>为什么要使用NumPy的数组结构而不是python标准库的list？</h3><p>因为python的list的元素在系统内存中是分散存储的。就是上面所提到的指针，指针指向的才是具体元素存储的位置。<br>而NumPys数组存储在一个均匀连续的内存块中。这样在遍历所有元素的时候，就不需要像list一样再去内存地址中挨个进行查找，从而节省了计算资源。</p>
 
         </section>
     </article>
@@ -98,6 +116,13 @@
   </div>
   <aside>
     
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用NumPy让科学计算更高效"><span class="toc-number">1.</span> <span class="toc-text">使用NumPy让科学计算更高效</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么要使用NumPy的数组结构而不是python标准库的list？"><span class="toc-number">1.1.</span> <span class="toc-text">为什么要使用NumPy的数组结构而不是python标准库的list？</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
   </aside>
 </main>
 
@@ -105,8 +130,8 @@
 <script type="text/javascript">
   /* * * CONFIGURATION VARIABLES * * */
   var disqus_shortname = "wild2pro";
-  var disqus_identifier = "http://wild2pro.com/about/index.html";
-  var disqus_url = "http://wild2pro.com/about/index.html";
+  var disqus_identifier = "http://wild2pro.com/DataAnalysisLearning02.html";
+  var disqus_url = "http://wild2pro.com/DataAnalysisLearning02.html";
 
   isAgent(getDisqus)
 
@@ -140,7 +165,6 @@
   }
 </script>
 <!-- disqus 公共JS代码 end -->
-
 
 
 
