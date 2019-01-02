@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>【笔记】初识Pandas | 写程序的厨子</title>
+  <meta name="keywords" content="数据分析,Pandas | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="初步了解数据分析中的Pandas库。 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e9e3e1673126f293b95cbd6dd134e45d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <meta name="baidu-site-verification" content="VCMZKpmAIs">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>【笔记】初识Pandas</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年01月01日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/数据分析/">数据分析</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#数据分析" class="tag">数据分析</a>
+
+  <a href="/tags/#Pandas" class="tag">Pandas</a>
+
+
+            
+          </div>
+          <h2 id="Series-是个定长的字典序列"><a href="#Series-是个定长的字典序列" class="headerlink" title="Series 是个定长的字典序列"></a>Series 是个定长的字典序列</h2><p>因为在存储数据的时候，相当于两个ndarray，这也是和字典最大的不同。因为在字典的结构里，元素的个数是不固定的。</p>
+<p>Series有两个基本属性：index和values。默认index是0，1，2……递增的整数序列，也可以自己指定索引, index = [‘a’, ‘b’, ‘c’, ‘d’]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> pandas <span class="keyword">import</span> Series, DataFrame</span><br><span class="line"></span><br><span class="line">x1 = Series([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</span><br><span class="line">x2 = Series([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 采用字典的方式创建Series</span></span><br><span class="line">d = &#123;<span class="string">'a'</span>: <span class="number">1</span>, <span class="string">'b'</span>:<span class="number">2</span>, <span class="string">'c'</span>:<span class="number">3</span>, <span class="string">'d'</span>:<span class="number">4</span>&#125;</span><br><span class="line">x3 = Series(d)</span><br><span class="line"></span><br><span class="line">print(x1)</span><br><span class="line">print(x2)</span><br><span class="line">print(x3)</span><br></pre></td></tr></table></figure>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0    1</span><br><span class="line">1    2</span><br><span class="line">2    3</span><br><span class="line">3    4</span><br><span class="line">dtype: int64</span><br><span class="line">a    1</span><br><span class="line">b    2</span><br><span class="line">c    3</span><br><span class="line">d    4</span><br><span class="line">dtype: int64</span><br></pre></td></tr></table></figure></p>
+<h2 id="DataFrame数据结构类型类似数据库表"><a href="#DataFrame数据结构类型类似数据库表" class="headerlink" title="DataFrame数据结构类型类似数据库表"></a>DataFrame数据结构类型类似数据库表</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> pandas <span class="keyword">import</span> Series, DataFrame</span><br><span class="line">data = &#123;<span class="string">'Chinese'</span>: [<span class="number">66</span>, <span class="number">95</span>, <span class="number">93</span>, <span class="number">90</span>,<span class="number">80</span>],<span class="string">'English'</span>: [<span class="number">65</span>, <span class="number">85</span>, <span class="number">92</span>, <span class="number">88</span>, <span class="number">90</span>],<span class="string">'Math'</span>: [<span class="number">30</span>, <span class="number">98</span>, <span class="number">96</span>, <span class="number">77</span>, <span class="number">90</span>]&#125;</span><br><span class="line">df1= DataFrame(data)</span><br><span class="line">df2 = DataFrame(data, index=[<span class="string">'ZhangFei'</span>, <span class="string">'GuanYu'</span>, <span class="string">'ZhaoYun'</span>, <span class="string">'HuangZhong'</span>, <span class="string">'DianWei'</span>], columns=[<span class="string">'English'</span>, <span class="string">'Math'</span>, <span class="string">'Chinese'</span>])</span><br><span class="line">print(df1)</span><br><span class="line">print(df2)</span><br></pre></td></tr></table></figure>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">   Chinese  English  Math</span><br><span class="line">0       66       65    30</span><br><span class="line">1       95       85    98</span><br><span class="line">2       93       92    96</span><br><span class="line">3       90       88    77</span><br><span class="line">4       80       90    90</span><br><span class="line">            English  Math  Chinese</span><br><span class="line">ZhangFei         65    30       66</span><br><span class="line">GuanYu           85    98       95</span><br><span class="line">ZhaoYun          92    96       93</span><br><span class="line">HuangZhong       88    77       90</span><br><span class="line">DianWei          90    90       80</span><br></pre></td></tr></table></figure></p>
+<h2 id="数据导入和导出"><a href="#数据导入和导出" class="headerlink" title="数据导入和导出"></a>数据导入和导出</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> pandas <span class="keyword">import</span> Series, DataFrame</span><br><span class="line">data = &#123;<span class="string">'Chinese'</span>: [<span class="number">66</span>, <span class="number">95</span>, <span class="number">93</span>, <span class="number">90</span>,<span class="number">80</span>],<span class="string">'English'</span>: [<span class="number">65</span>, <span class="number">85</span>, <span class="number">92</span>, <span class="number">88</span>, <span class="number">90</span>],<span class="string">'Math'</span>: [<span class="number">30</span>, <span class="number">98</span>, <span class="number">96</span>, <span class="number">77</span>, <span class="number">90</span>]&#125;</span><br><span class="line">score = DataFrame(data, index=[<span class="string">'ZhangFei'</span>, <span class="string">'GuanYu'</span>, <span class="string">'ZhaoYun'</span>, <span class="string">'HuangZhong'</span>, <span class="string">'DianWei'</span>], columns=[<span class="string">'English'</span>, <span class="string">'Math'</span>, <span class="string">'Chinese'</span>])</span><br><span class="line">score.to_excel(<span class="string">'data.xlsx'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入excel表格</span></span><br><span class="line">inputScores = DataFrame(pd.read_excel(<span class="string">'data.xlsx'</span>))</span><br><span class="line">print(inputScores)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">            English  Math  Chinese</span><br><span class="line">ZhangFei         65    30       66</span><br><span class="line">GuanYu           85    98       95</span><br><span class="line">ZhaoYun          92    96       93</span><br><span class="line">HuangZhong       88    77       90</span><br><span class="line">DianWei          90    90       80</span><br></pre></td></tr></table></figure>
+<h2 id="数据清洗"><a href="#数据清洗" class="headerlink" title="数据清洗"></a>数据清洗</h2><h3 id="删除DataFrame的行或列"><a href="#删除DataFrame的行或列" class="headerlink" title="删除DataFrame的行或列"></a>删除DataFrame的行或列</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> pandas <span class="keyword">import</span> Series, DataFrame</span><br><span class="line">data = &#123;<span class="string">'Chinese'</span>: [<span class="number">66</span>, <span class="number">95</span>, <span class="number">93</span>, <span class="number">90</span>,<span class="number">80</span>],<span class="string">'English'</span>: [<span class="number">65</span>, <span class="number">85</span>, <span class="number">92</span>, <span class="number">88</span>, <span class="number">90</span>],<span class="string">'Math'</span>: [<span class="number">30</span>, <span class="number">98</span>, <span class="number">96</span>, <span class="number">77</span>, <span class="number">90</span>]&#125;</span><br><span class="line">df2 = DataFrame(data, index=[<span class="string">'ZhangFei'</span>, <span class="string">'GuanYu'</span>, <span class="string">'ZhaoYun'</span>, <span class="string">'HuangZhong'</span>, <span class="string">'DianWei'</span>], columns=[<span class="string">'English'</span>, <span class="string">'Math'</span>, <span class="string">'Chinese'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除列</span></span><br><span class="line">df2 = df2.drop(columns=[<span class="string">'Chinese'</span>])</span><br><span class="line">print(df2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除行</span></span><br><span class="line">df2 = df2.drop(index=[<span class="string">'ZhangFei'</span>])</span><br><span class="line">print(df2)</span><br></pre></td></tr></table></figure>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">            English  Math</span><br><span class="line">ZhangFei         65    30</span><br><span class="line">GuanYu           85    98</span><br><span class="line">ZhaoYun          92    96</span><br><span class="line">HuangZhong       88    77</span><br><span class="line">DianWei          90    90</span><br><span class="line"></span><br><span class="line">            English  Math</span><br><span class="line">GuanYu           85    98</span><br><span class="line">ZhaoYun          92    96</span><br><span class="line">HuangZhong       88    77</span><br><span class="line">DianWei          90    90</span><br></pre></td></tr></table></figure></p>
+<h3 id="重命名列名"><a href="#重命名列名" class="headerlink" title="重命名列名"></a>重命名列名</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 紧接上面代码</span></span><br><span class="line"><span class="comment"># 对列名重命名</span></span><br><span class="line">df2.rename(columns=&#123;<span class="string">'Math'</span>: <span class="string">'Shuxue'</span>, <span class="string">'English'</span>: <span class="string">'Yingyu'</span>&#125;, inplace = <span class="keyword">True</span>)</span><br><span class="line">print(df2)</span><br></pre></td></tr></table></figure>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">            Yingyu  Shuxue</span><br><span class="line">GuanYu          85      98</span><br><span class="line">ZhaoYun         92      96</span><br><span class="line">HuangZhong      88      77</span><br><span class="line">DianWei         90      90</span><br></pre></td></tr></table></figure></p>
+<h3 id="去除重复的值"><a href="#去除重复的值" class="headerlink" title="去除重复的值"></a>去除重复的值</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 紧接上面代码</span></span><br><span class="line">duplicateDf = DataFrame(&#123;<span class="string">'Shuxue'</span>: [<span class="number">90</span>], <span class="string">'Yingyu'</span>: [<span class="number">90</span>]&#125;, index=[<span class="string">'Weiyan'</span>])</span><br><span class="line">df2 = df2.append(duplicateDf, sort=<span class="keyword">True</span>)</span><br><span class="line">print(df2)</span><br><span class="line">df2 = df2.drop_duplicates() <span class="comment"># 去除重复行</span></span><br><span class="line">print(df2)</span><br></pre></td></tr></table></figure>
+<p>执行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">            Shuxue  Yingyu</span><br><span class="line">GuanYu          98      85</span><br><span class="line">ZhaoYun         96      92</span><br><span class="line">HuangZhong      77      88</span><br><span class="line">DianWei         90      90</span><br><span class="line">Weiyan          90      90</span><br><span class="line">            Shuxue  Yingyu</span><br><span class="line">GuanYu          98      85</span><br><span class="line">ZhaoYun         96      92</span><br><span class="line">HuangZhong      77      88</span><br><span class="line">DianWei         90      90</span><br></pre></td></tr></table></figure></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Series-是个定长的字典序列"><span class="toc-number">1.</span> <span class="toc-text">Series 是个定长的字典序列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DataFrame数据结构类型类似数据库表"><span class="toc-number">2.</span> <span class="toc-text">DataFrame数据结构类型类似数据库表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据导入和导出"><span class="toc-number">3.</span> <span class="toc-text">数据导入和导出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据清洗"><span class="toc-number">4.</span> <span class="toc-text">数据清洗</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#删除DataFrame的行或列"><span class="toc-number">4.1.</span> <span class="toc-text">删除DataFrame的行或列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重命名列名"><span class="toc-number">4.2.</span> <span class="toc-text">重命名列名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#去除重复的值"><span class="toc-number">4.3.</span> <span class="toc-text">去除重复的值</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/DataAnalysisLearning03.html";
+  var disqus_url = "http://wild2pro.com/DataAnalysisLearning03.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
