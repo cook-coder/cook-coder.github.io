@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>如何在Mac上安装TensorFlow | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e9e3e1673126f293b95cbd6dd134e45d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <meta name="baidu-site-verification" content="VCMZKpmAIs">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>如何在Mac上安装TensorFlow</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年01月09日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/人工智能/">人工智能</a>/ <a class="article-category-link" href="/categories/人工智能/TensorFlow/">TensorFlow</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#TensorFlow" class="tag">TensorFlow</a>
+
+
+            
+          </div>
+          <h2 id="环境需求"><a href="#环境需求" class="headerlink" title="环境需求"></a>环境需求</h2><ul>
+<li>MacOS: &gt;= 10.12.6</li>
+<li>HomeBrew</li>
+<li>Python: 2.x or 3.x</li>
+<li>pip</li>
+</ul>
+<h3 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h3><p>打开命令行，依次输入并执行以下命令</p>
+<ol>
+<li><p>安装Python开发环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装Homebrew</span></span><br><span class="line">/usr/bin/ruby -e <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置环境变量(如果只在命令行中输入则只对当前会话生效，永久生效请在~/.bash_profile文件末尾加入该命令)</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="string">"/usr/local/bin:/usr/local/sbin:<span class="variable">$PATH</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新homebrew软件库</span></span><br><span class="line">brew update</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装Python2</span></span><br><span class="line">brew install python@2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载pip安装文件</span></span><br><span class="line">curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装pip</span></span><br><span class="line">python get-pip.py</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装virtualenv，因为virtualenv是系统级应用，所以需要sudo</span></span><br><span class="line">sudo pip install -U virtualenv</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建Python虚拟环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在当前目录下创建一个tf00文件夹（里面的python环境为2.7）</span></span><br><span class="line">virtualenv --system-site-package -p python2.7 ./tf00</span><br><span class="line"></span><br><span class="line"><span class="comment"># 激活虚拟环境, 激活后可以看到命令行多了tf00字样,证明虚拟环境已激活</span></span><br><span class="line"><span class="built_in">source</span> ./tf00/bin/active</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看虚拟环境创建时安装好的包</span></span><br><span class="line">pip list</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装适配的TensorFlow软件包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pip install --upgrade tensorflow</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装完成后，我的命令行提示了如下信息:</span></span><br><span class="line">matplotlib 1.3.1 requires nose, <span class="built_in">which</span> is not installed.</span><br><span class="line">matplotlib 1.3.1 requires tornado, <span class="built_in">which</span> is not installed.</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行命令安装缺少的包即可</span></span><br><span class="line">pip install nose</span><br><span class="line">pip install tornado</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试安装是否成功，执行了之后什么反应都没有就证明是安装好了</span></span><br><span class="line">python -c <span class="string">"import tensorflow as tf"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 退出虚拟环境, 执行之后可以发现命令行中tf00字样不见了。</span></span><br><span class="line">deactivate</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="Hello-TensorFlow"><a href="#Hello-TensorFlow" class="headerlink" title="Hello TensorFlow"></a>Hello TensorFlow</h2><p>环境安装好了之后我们就可以按照惯例来运行一个Hello xxx程序了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活环境（如果刚才关掉了的话）</span></span><br><span class="line"><span class="built_in">source</span> ./tf00/bin/activate</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行hello TensorFlow程序</span></span><br><span class="line">python</span><br><span class="line">Python 2.7.10 (default, Aug 17 2018, 19:45:58)</span><br><span class="line">[GCC 4.2.1 Compatible Apple LLVM 10.0.0 (clang-1000.0.42)] on darwin</span><br><span class="line">Type <span class="string">"help"</span>, <span class="string">"copyright"</span>, <span class="string">"credits"</span> or <span class="string">"license"</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; import tensorflow as tf</span><br><span class="line">&gt;&gt;&gt; hello = tf.constant(<span class="string">"Hello TensorFlow"</span>)</span><br><span class="line">&gt;&gt;&gt; sess = tf.Session()</span><br><span class="line">2019-01-09 17:00:34.752529: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">print</span> sess.run(hello)</span><br><span class="line">Hello TensorFlow</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6,7,8行为python启动时的输出</span></span><br><span class="line"><span class="comment"># 12行是TensorFlow输出的Infomation, 不是警告或者错误。所以不会影响后续操作的。感兴趣的可以自行Google查询，我水平有限，解释不清楚的。</span></span><br><span class="line"><span class="comment"># 14行为输出结果</span></span><br></pre></td></tr></table></figure>
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境需求"><span class="toc-number">1.</span> <span class="toc-text">环境需求</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#环境安装"><span class="toc-number">1.1.</span> <span class="toc-text">环境安装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hello-TensorFlow"><span class="toc-number">2.</span> <span class="toc-text">Hello TensorFlow</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/HowToInstallTensorFlowOnMac.html";
+  var disqus_url = "http://wild2pro.com/HowToInstallTensorFlowOnMac.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
