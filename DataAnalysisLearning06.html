@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>【笔记】用户画像：标签化就是数据的抽象能力 | 写程序的厨子</title>
+  <meta name="keywords" content="用户画像,数据分析实战入门 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="如何上手操作数据分析。 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e9e3e1673126f293b95cbd6dd134e45d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <meta name="baidu-site-verification" content="VCMZKpmAIs">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>【笔记】用户画像：标签化就是数据的抽象能力</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年01月16日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/数据分析/">数据分析</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#数据分析" class="tag">数据分析</a>
+
+  <a href="/tags/#用户画像" class="tag">用户画像</a>
+
+
+            
+          </div>
+          <blockquote>
+<p>精细化运营将是长久的主题</p>
+</blockquote>
+<h2 id="用户画像的准则"><a href="#用户画像的准则" class="headerlink" title="用户画像的准则"></a>用户画像的准则</h2><p>首先就是将自己企业的用户画像做个白描，知道这些用户“都是谁”“从哪来”“要去哪”。</p>
+<h3 id="1-用户从哪里来"><a href="#1-用户从哪里来" class="headerlink" title="1. 用户从哪里来"></a>1. 用户从哪里来</h3><p>用户需要唯一ID,这是用户画像的核心，可以是用户名、手机号、邮箱、设备号、CookieID等。<br>弄清楚他们是为了聚餐还是自己吃宵夜</p>
+<h3 id="2-用户是谁"><a href="#2-用户是谁" class="headerlink" title="2. 用户是谁"></a>2. 用户是谁</h3><p>标签化，帮助理解用户。</p>
+<p>标签总纲要：八个字“用户消费行为分析”</p>
+<h4 id="1-用户标签"><a href="#1-用户标签" class="headerlink" title="1. 用户标签"></a>1. 用户标签</h4><p>性别、年龄、地域、收入、学历、职业等基础属性。</p>
+<h4 id="2-消费标签"><a href="#2-消费标签" class="headerlink" title="2. 消费标签"></a>2. 消费标签</h4><p>消费习惯、购买意向、是否对促销敏感。这些统计分析用户的消费习惯。</p>
+<h4 id="3-行为标签"><a href="#3-行为标签" class="headerlink" title="3. 行为标签"></a>3. 行为标签</h4><p>时间段、频次、时长、访问路径。分析用户行为，得到使用App的习惯。</p>
+<h4 id="4-内容分析"><a href="#4-内容分析" class="headerlink" title="4. 内容分析"></a>4. 内容分析</h4><p>对用户平时浏览的内容，尤其是停留时长、浏览次数多的内容进行分析，分析出用户对哪些内容感兴趣，比如金融、娱乐、体育等。</p>
+<h3 id="3-用户要到哪里去"><a href="#3-用户要到哪里去" class="headerlink" title="3. 用户要到哪里去"></a>3. 用户要到哪里去</h3><p>将用户画像与业务关联，提升转化率，降低流失率。</p>
+<h3 id="用户画像的业务价值"><a href="#用户画像的业务价值" class="headerlink" title="用户画像的业务价值"></a>用户画像的业务价值</h3><p>从三个阶段来划分业务价值</p>
+<ol>
+<li>获客：如何进行拉新，通过更精准的营销获取客户。</li>
+<li>粘客：个性化推荐，搜索排序，场景运营等。</li>
+<li>留客：流失率预测，分析关键节点降低流失率。</li>
+</ol>
+<p>如果按照数据流处理的阶段来划分用户画像建模的过程，可以分为以下三层：</p>
+<ol>
+<li>数据层：指用户消费行为里的标签。我们可以打上“事实标签”，作为数据客观的记录。</li>
+<li>算法层：指的是透过这些行为算出的用户模型。我们可以打上“模型标签”，作为用户画像的分类标识。</li>
+<li>业务层指的是获客、粘客、留客的手段。我们可以打上“预测标签”，作为业务关联的结果。</li>
+</ol>
+<p>所以这个标签化的流程，就是通过数据层的“事实标签”，在算法层进行计算，打上“模型标签”的分类结果，最后指导业务层，得出“预测标签”。<br><img src="/img/blogs/learning/yhhxywjz.png" alt="数据流标签化流程"></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#用户画像的准则"><span class="toc-number">1.</span> <span class="toc-text">用户画像的准则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-用户从哪里来"><span class="toc-number">1.1.</span> <span class="toc-text">1. 用户从哪里来</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-用户是谁"><span class="toc-number">1.2.</span> <span class="toc-text">2. 用户是谁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-用户标签"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 用户标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-消费标签"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 消费标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-行为标签"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 行为标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-内容分析"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. 内容分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-用户要到哪里去"><span class="toc-number">1.3.</span> <span class="toc-text">3. 用户要到哪里去</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用户画像的业务价值"><span class="toc-number">1.4.</span> <span class="toc-text">用户画像的业务价值</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/DataAnalysisLearning06.html";
+  var disqus_url = "http://wild2pro.com/DataAnalysisLearning06.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
