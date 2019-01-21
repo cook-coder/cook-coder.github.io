@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>【笔记】数据采集：如何自动化采集数据？ | 写程序的厨子</title>
+  <meta name="keywords" content="自动化采集数据,数据采集自动化 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="如何自动化采集数据 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e9e3e1673126f293b95cbd6dd134e45d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <meta name="baidu-site-verification" content="VCMZKpmAIs">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>【笔记】数据采集：如何自动化采集数据？</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年01月21日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/数据分析/">数据分析</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#数据采集" class="tag">数据采集</a>
+
+
+            
+          </div>
+          <p>如果我们想要预测一只股票的走势，那么我光把这只股票的历史数据拿到是不够的，你只知道了它历史上什么时候涨，什么时候跌，缺不知道它为什么涨为什么跌。有可能是因为爆发了战争或者疫情。</p>
+<p>所以我们要知道一个数据的走势，是由多个维度影响的。我们需要通过<strong>多源的数据采集</strong>，收集到尽可能多的<strong>数据维度</strong>，同时<strong>保证数据的质量</strong>，才能得到高质量的数据挖掘结果。</p>
+<h2 id="数据源"><a href="#数据源" class="headerlink" title="数据源"></a>数据源</h2><h3 id="1-开放数据源：政府、企业、高校"><a href="#1-开放数据源：政府、企业、高校" class="headerlink" title="1. 开放数据源：政府、企业、高校"></a>1. 开放数据源：政府、企业、高校</h3><p>开放数据源一般是针对行业的数据库。比如美国人口调查局开放了美国的人口信息。<br>国内，贵州在做大胆的尝试，逐年开放旅游、商务、交通等方面的数据。</p>
+<h3 id="2-爬虫抓取：网页、APP"><a href="#2-爬虫抓取：网页、APP" class="headerlink" title="2. 爬虫抓取：网页、APP"></a>2. 爬虫抓取：网页、APP</h3><p>一般针对特定的网站或APP，比如抓取评论。</p>
+<ol start="3">
+<li><p>日志采集：前端采集、后端脚本<br>统计用户的操作等。</p>
+</li>
+<li><p>传感器：图像、热敏、测速<br>采集物理信息。</p>
+</li>
+</ol>
+<h2 id="如何使用开放数据源"><a href="#如何使用开放数据源" class="headerlink" title="如何使用开放数据源"></a>如何使用开放数据源</h2><p>开放数据源可以从两个维度来考虑：</p>
+<ol>
+<li>单位的维度：政府、企业、高校</li>
+<li>行业的维度：交通、金融、能源</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>单位</th>
+<th>数据源</th>
+<th>网址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国人口调查局</td>
+<td>提供人口信息，地区分布和教育情况等美国公民相关的数据</td>
+<td><a href="http://www.census.gov/data.html" target="_blank" rel="noopener">http://www.census.gov/data.html</a></td>
+</tr>
+<tr>
+<td>欧盟</td>
+<td>欧盟开放数据平台，提供欧盟各机构的大量数据。</td>
+<td><a href="http://open-data.europa.eu/en/data/" target="_blank" rel="noopener">http://open-data.europa.eu/en/data/</a></td>
+</tr>
+<tr>
+<td>Facebook</td>
+<td>Facebook官方提供的API，用于查询该网站用户的海量信息</td>
+<td><a href="https://developers.facebook.com/docs/graph-api" target="_blank" rel="noopener">https://developers.facebook.com/docs/graph-api</a></td>
+</tr>
+<tr>
+<td>Amazon</td>
+<td>Amazon网络服务开放数据集</td>
+<td><a href="http://aws.amazon.com/datasets" target="_blank" rel="noopener">http://aws.amazon.com/datasets</a></td>
+</tr>
+<tr>
+<td>Google</td>
+<td>Goole金融，收录了40年以来的股票数据，实时更新</td>
+<td><a href="https://www.google.com/finance" target="_blank" rel="noopener">https://www.google.com/finance</a></td>
+</tr>
+<tr>
+<td>北京大学</td>
+<td>北京大学开放研究数据平台</td>
+<td><a href="https://opendata.pku.edu.cn" target="_blank" rel="noopener">https://opendata.pku.edu.cn</a></td>
+</tr>
+<tr>
+<td>ImageNet</td>
+<td>目前世界上图像识别最大的数据库，包括近1500万张图像</td>
+<td><a href="http://www.image-net.org" target="_blank" rel="noopener">http://www.image-net.org</a></td>
+</tr>
+</tbody>
+</table>
+<p>所以如果你想找某个领域的数据源，比如金融领域，你基本上可以看下政府、高校、企业是否有开放的数据源。当然你也可以直接搜索金融开放数据源。</p>
+<h2 id="如何使用爬虫抓取"><a href="#如何使用爬虫抓取" class="headerlink" title="如何使用爬虫抓取"></a>如何使用爬虫抓取</h2><ol>
+<li>使用Requests爬取内容。</li>
+<li>使用XPath解析内容。</li>
+<li>使用Pandas保存数据。</li>
+</ol>
+<p>此外还有Selenium，PhantomJS，或者用 Puppteteer 这种无头模式。</p>
+<h3 id="现成的爬虫产品"><a href="#现成的爬虫产品" class="headerlink" title="现成的爬虫产品"></a>现成的爬虫产品</h3><h4 id="火车采集器"><a href="#火车采集器" class="headerlink" title="火车采集器"></a>火车采集器</h4><p><code>http://www.locoy.com/</code><br>它不仅可以做抓取工具，也可以做数据清洗、数据分析、数据挖掘和可视化等工作。</p>
+<h4 id="八爪鱼"><a href="#八爪鱼" class="headerlink" title="八爪鱼"></a>八爪鱼</h4><p><code>http://www.bazhuayu.com/</code><br>免费版：本地采集<br>收费版：云采集，自动切换IP，多节点采集。</p>
+<h4 id="搜集客"><a href="#搜集客" class="headerlink" title="搜集客"></a>搜集客</h4><p><code>http://www.gooseeker.com/</code><br>完全可视化，无需编程。没有云采集功能。</p>
+<h2 id="如何使用日志采集工具"><a href="#如何使用日志采集工具" class="headerlink" title="如何使用日志采集工具"></a>如何使用日志采集工具</h2><p>日志采集可以分两种形式：</p>
+<ol>
+<li><p>通过 Web 服务器采集，例如 httpd、Nginx、Tomcat 都自带日志记录功能。同时很多互联网企业都有自己的海量数据采集工具，多用于系统日志采集，如 Hadoop 的 Chukwa、Cloudera 的 Flume、Facebook 的 Scribe 等，这些工具均采用分布式架构，能够满足每秒数百 MB 的日志数据采集和传输需求。</p>
+</li>
+<li><p>自定义采集用户行为，例如用 JavaScript 代码监听用户的行为、AJAX 异步请求后台记录日志等。</p>
+</li>
+</ol>
+<h3 id="埋点是什么"><a href="#埋点是什么" class="headerlink" title="埋点是什么"></a>埋点是什么</h3><p>埋点就是在有需要的位置采集相应的信息，进行上报。</p>
+<p>推荐的第三方工具：</p>
+<ol>
+<li>友盟</li>
+<li>google analysis</li>
+<li>talkingdata</li>
+</ol>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据源"><span class="toc-number">1.</span> <span class="toc-text">数据源</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-开放数据源：政府、企业、高校"><span class="toc-number">1.1.</span> <span class="toc-text">1. 开放数据源：政府、企业、高校</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-爬虫抓取：网页、APP"><span class="toc-number">1.2.</span> <span class="toc-text">2. 爬虫抓取：网页、APP</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用开放数据源"><span class="toc-number">2.</span> <span class="toc-text">如何使用开放数据源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用爬虫抓取"><span class="toc-number">3.</span> <span class="toc-text">如何使用爬虫抓取</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#现成的爬虫产品"><span class="toc-number">3.1.</span> <span class="toc-text">现成的爬虫产品</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#火车采集器"><span class="toc-number">3.1.1.</span> <span class="toc-text">火车采集器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#八爪鱼"><span class="toc-number">3.1.2.</span> <span class="toc-text">八爪鱼</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#搜集客"><span class="toc-number">3.1.3.</span> <span class="toc-text">搜集客</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用日志采集工具"><span class="toc-number">4.</span> <span class="toc-text">如何使用日志采集工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#埋点是什么"><span class="toc-number">4.1.</span> <span class="toc-text">埋点是什么</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/DataAnalysisLearning07.html";
+  var disqus_url = "http://wild2pro.com/DataAnalysisLearning07.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
