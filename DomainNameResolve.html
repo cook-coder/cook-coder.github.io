@@ -17,9 +17,9 @@
   <link rel="icon" href="/favicon.ico">
   
     
-  <title>在Docker容器中运行TensorFlow | 写程序的厨子</title>
-  <meta name="keywords" content="TensorflowDocker | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
-  <meta name="description" content="介绍如何使用Docker运行TensorFlow | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <title>域名解析的完美姿势 | 写程序的厨子</title>
+  <meta name="keywords" content="nginx域名解析 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="Nginx下的域名解析配置指南 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -75,13 +75,13 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>在Docker容器中运行TensorFlow</h1>
+          <h1>域名解析的完美姿势</h1>
           <div class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年01月19日</time>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年02月17日</time>
             
               | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/人工智能/">人工智能</a>/ <a class="article-category-link" href="/categories/人工智能/TensorFlow/">TensorFlow</a>
+    <a class="article-category-link" href="/categories/日常采坑/">日常采坑</a>
   </div>
 
 
@@ -89,31 +89,17 @@
             
             
               | 
-                  <i class="fa fa-tag" aria-hidden="true"></i>
+                  <i class="fa fa-tags" aria-hidden="true"></i>
                 
                
-  <a href="/tags/#TensorFlow" class="tag">TensorFlow</a>
+  <a href="/tags/#域名解析" class="tag">域名解析</a>
+
+  <a href="/tags/#域名重定向" class="tag">域名重定向</a>
 
 
             
           </div>
-          <h2 id="环境需求"><a href="#环境需求" class="headerlink" title="环境需求"></a>环境需求</h2><ol>
-<li>Docker</li>
-</ol>
-<h2 id="启动步骤"><a href="#启动步骤" class="headerlink" title="启动步骤"></a>启动步骤</h2><h3 id="1-拉取TensorFlow镜像"><a href="#1-拉取TensorFlow镜像" class="headerlink" title="1. 拉取TensorFlow镜像"></a>1. 拉取TensorFlow镜像</h3><p><a href="https://hub.docker.com/r/tensorflow/tensorflow/" target="_blank" rel="noopener">TensorFlow镜像地址</a></p>
-<p><code>$ docker pull tensorflow/tensorflow:nightly-jupyter</code></p>
-<p><img src="/img/blogs/tensorflow/pull_docker_image.png" alt="拉取TensorFlow的docker镜像"></p>
-<p>我这里采用的是nightly版本并且带有jupyter的环境，如果你想使用稳定版本可以把后面的镜像tag替换为latest-py3-jupyter, 即最新发行版+python3+jupyter的环境，根据需求灵活挑选。</p>
-<h3 id="2-运行该镜像"><a href="#2-运行该镜像" class="headerlink" title="2. 运行该镜像"></a>2. 运行该镜像</h3><p><code>$ docker run -it --rm -p 8888:8888 -v $PWD:/tf/notebooks tensorflow/tensorflow:nightly-jupyter</code></p>
-<p><img src="/img/blogs/tensorflow/docker_run_tf.png" alt="运行TensorFlow的docker镜像"></p>
-<ul>
-<li>-it =&gt; 以交互式方式运行</li>
-<li>-p 8888:8888 =&gt; 把容器的8888端口映射到物理机的8888端口</li>
-<li>-v $PWD:/tf/notebooks =&gt; 把物理机当前目录映射到容器的/tf/notebooks, 这样就可以把代码文件保存到物理机上。</li>
-</ul>
-<p>我们从截图上可以看到要访问jupyter notebook的话就复制这个链接到浏览器：<a href="http://127.0.0.1:8888/?token=a39682c07f1275a4fe1f16cd4f635bb632c714b380c1b411" target="_blank" rel="noopener">http://127.0.0.1:8888/?token=a39682c07f1275a4fe1f16cd4f635bb632c714b380c1b411</a></p>
-<p>每次启动都是不一样的token，不要复制我的链接去访问。</p>
-<p><img src="/img/blogs/tensorflow/jupyter_start.png" alt="jupyter启动图"></p>
+          <p>平时专职搞开发，基本不动服务器的东西，如今自己要搞个网站，就自己摸索了一下Nginx的配置。</p>
 
         </section>
     </article>
@@ -130,13 +116,6 @@
   </div>
   <aside>
     
-    <div class="toc-container">
-        <h1>目录</h1>
-        <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境需求"><span class="toc-number">1.</span> <span class="toc-text">环境需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动步骤"><span class="toc-number">2.</span> <span class="toc-text">启动步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-拉取TensorFlow镜像"><span class="toc-number">2.1.</span> <span class="toc-text">1. 拉取TensorFlow镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-运行该镜像"><span class="toc-number">2.2.</span> <span class="toc-text">2. 运行该镜像</span></a></li></ol></li></ol>
-        </div>
-    </div>
-    
   </aside>
 </main>
 
@@ -144,8 +123,8 @@
 <script type="text/javascript">
   /* * * CONFIGURATION VARIABLES * * */
   var disqus_shortname = "wild2pro";
-  var disqus_identifier = "http://wild2pro.com/RunTensorflowWithDocker.html";
-  var disqus_url = "http://wild2pro.com/RunTensorflowWithDocker.html";
+  var disqus_identifier = "http://wild2pro.com/DomainNameResolve.html";
+  var disqus_url = "http://wild2pro.com/DomainNameResolve.html";
 
   isAgent(getDisqus)
 

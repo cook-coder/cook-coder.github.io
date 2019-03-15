@@ -103,12 +103,12 @@
 <p>再后来就是开始看一些数据分析的入门书，订阅了学习的专栏。</p>
 <h2 id="正式笔记"><a href="#正式笔记" class="headerlink" title="正式笔记"></a>正式笔记</h2><blockquote>
 <p>数据分析概览</p>
-</blockquote>
 <h3 id="数据分析的组成"><a href="#数据分析的组成" class="headerlink" title="数据分析的组成"></a>数据分析的组成</h3><ol>
 <li>数据采集<br>这是所有数据的来源</li>
 <li>数据挖掘<br>分析数据，挖掘商业价值</li>
 <li>数据可视化<br>让结果直观的展现</li>
 </ol>
+</blockquote>
 <h4 id="数据采集"><a href="#数据采集" class="headerlink" title="数据采集"></a>数据采集</h4><h5 id="数据源"><a href="#数据源" class="headerlink" title="数据源"></a>数据源</h5><ol>
 <li>开源数据源</li>
 <li>爬虫抓取</li>
@@ -298,5 +298,20 @@
 <script src="/lib/jquery.fancybox.min.js"></script>
 
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>

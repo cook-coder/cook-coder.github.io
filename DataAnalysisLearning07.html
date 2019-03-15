@@ -101,7 +101,7 @@
 <p>所以我们要知道一个数据的走势，是由多个维度影响的。我们需要通过<strong>多源的数据采集</strong>，收集到尽可能多的<strong>数据维度</strong>，同时<strong>保证数据的质量</strong>，才能得到高质量的数据挖掘结果。</p>
 <h2 id="数据源"><a href="#数据源" class="headerlink" title="数据源"></a>数据源</h2><h3 id="1-开放数据源：政府、企业、高校"><a href="#1-开放数据源：政府、企业、高校" class="headerlink" title="1. 开放数据源：政府、企业、高校"></a>1. 开放数据源：政府、企业、高校</h3><p>开放数据源一般是针对行业的数据库。比如美国人口调查局开放了美国的人口信息。<br>国内，贵州在做大胆的尝试，逐年开放旅游、商务、交通等方面的数据。</p>
 <h3 id="2-爬虫抓取：网页、APP"><a href="#2-爬虫抓取：网页、APP" class="headerlink" title="2. 爬虫抓取：网页、APP"></a>2. 爬虫抓取：网页、APP</h3><p>一般针对特定的网站或APP，比如抓取评论。</p>
-<ol start="3">
+<ol>
 <li><p>日志采集：前端采集、后端脚本<br>统计用户的操作等。</p>
 </li>
 <li><p>传感器：图像、热敏、测速<br>采集物理信息。</p>
@@ -112,6 +112,7 @@
 <li>单位的维度：政府、企业、高校</li>
 <li>行业的维度：交通、金融、能源</li>
 </ol>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -158,6 +159,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>所以如果你想找某个领域的数据源，比如金融领域，你基本上可以看下政府、高校、企业是否有开放的数据源。当然你也可以直接搜索金融开放数据源。</p>
 <h2 id="如何使用爬虫抓取"><a href="#如何使用爬虫抓取" class="headerlink" title="如何使用爬虫抓取"></a>如何使用爬虫抓取</h2><ol>
 <li>使用Requests爬取内容。</li>
@@ -322,5 +324,20 @@
 <script src="/lib/jquery.fancybox.min.js"></script>
 
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>

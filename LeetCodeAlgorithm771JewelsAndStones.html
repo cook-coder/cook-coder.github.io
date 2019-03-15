@@ -17,9 +17,9 @@
   <link rel="icon" href="/favicon.ico">
   
     
-  <title>在Docker容器中运行TensorFlow | 写程序的厨子</title>
-  <meta name="keywords" content="TensorflowDocker | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
-  <meta name="description" content="介绍如何使用Docker运行TensorFlow | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <title>leetcode算法题771解题思路 | 写程序的厨子</title>
+  <meta name="keywords" content="leetcode,algorithm | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -75,13 +75,13 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>在Docker容器中运行TensorFlow</h1>
+          <h1>leetcode算法题771解题思路</h1>
           <div class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年01月19日</time>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年03月15日</time>
             
               | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/人工智能/">人工智能</a>/ <a class="article-category-link" href="/categories/人工智能/TensorFlow/">TensorFlow</a>
+    <a class="article-category-link" href="/categories/leetcode/">leetcode</a>/ <a class="article-category-link" href="/categories/leetcode/algorithm/">algorithm</a>
   </div>
 
 
@@ -89,31 +89,37 @@
             
             
               | 
-                  <i class="fa fa-tag" aria-hidden="true"></i>
+                  <i class="fa fa-tags" aria-hidden="true"></i>
                 
                
-  <a href="/tags/#TensorFlow" class="tag">TensorFlow</a>
+  <a href="/tags/#leetcode" class="tag">leetcode</a>
+
+  <a href="/tags/#algorithm" class="tag">algorithm</a>
 
 
             
           </div>
-          <h2 id="环境需求"><a href="#环境需求" class="headerlink" title="环境需求"></a>环境需求</h2><ol>
-<li>Docker</li>
-</ol>
-<h2 id="启动步骤"><a href="#启动步骤" class="headerlink" title="启动步骤"></a>启动步骤</h2><h3 id="1-拉取TensorFlow镜像"><a href="#1-拉取TensorFlow镜像" class="headerlink" title="1. 拉取TensorFlow镜像"></a>1. 拉取TensorFlow镜像</h3><p><a href="https://hub.docker.com/r/tensorflow/tensorflow/" target="_blank" rel="noopener">TensorFlow镜像地址</a></p>
-<p><code>$ docker pull tensorflow/tensorflow:nightly-jupyter</code></p>
-<p><img src="/img/blogs/tensorflow/pull_docker_image.png" alt="拉取TensorFlow的docker镜像"></p>
-<p>我这里采用的是nightly版本并且带有jupyter的环境，如果你想使用稳定版本可以把后面的镜像tag替换为latest-py3-jupyter, 即最新发行版+python3+jupyter的环境，根据需求灵活挑选。</p>
-<h3 id="2-运行该镜像"><a href="#2-运行该镜像" class="headerlink" title="2. 运行该镜像"></a>2. 运行该镜像</h3><p><code>$ docker run -it --rm -p 8888:8888 -v $PWD:/tf/notebooks tensorflow/tensorflow:nightly-jupyter</code></p>
-<p><img src="/img/blogs/tensorflow/docker_run_tf.png" alt="运行TensorFlow的docker镜像"></p>
+          <h2 id="原题"><a href="#原题" class="headerlink" title="原题"></a>原题</h2><h3 id="771-Jewels-and-Stone"><a href="#771-Jewels-and-Stone" class="headerlink" title="771. Jewels and Stone"></a>771. Jewels and Stone</h3><p>You’re given strings <strong><em>J</em></strong> representing the types of stones that are jewels, and <strong><em>S</em></strong> representing the stones you have.  Each character in <strong><em>S</em></strong> is a type of stone you have.  You want to know how many of the stones you have are also jewels.</p>
+<p>The letters in <strong><em>J</em></strong> are guaranteed distinct, and all characters in <strong><em>J</em></strong> and <strong><em>S</em></strong> are letters. Letters are case sensitive, so “a” is considered a different type of stone from “A”.</p>
+<p>Example 1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: J = &quot;aA&quot;, S = &quot;aAAbbbb&quot;</span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure></p>
+<p>Example 2:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: J = &quot;z&quot;, S = &quot;ZZ&quot;</span><br><span class="line">Output: 0</span><br></pre></td></tr></table></figure></p>
+<p>Note:</p>
 <ul>
-<li>-it =&gt; 以交互式方式运行</li>
-<li>-p 8888:8888 =&gt; 把容器的8888端口映射到物理机的8888端口</li>
-<li>-v $PWD:/tf/notebooks =&gt; 把物理机当前目录映射到容器的/tf/notebooks, 这样就可以把代码文件保存到物理机上。</li>
+<li><strong><em>S</em></strong> and <strong><em>J</em></strong> will consist of letters and have length at most 50.</li>
+<li>The characters in <strong><em>J</em></strong> are distinct.</li>
 </ul>
-<p>我们从截图上可以看到要访问jupyter notebook的话就复制这个链接到浏览器：<a href="http://127.0.0.1:8888/?token=a39682c07f1275a4fe1f16cd4f635bb632c714b380c1b411" target="_blank" rel="noopener">http://127.0.0.1:8888/?token=a39682c07f1275a4fe1f16cd4f635bb632c714b380c1b411</a></p>
-<p>每次启动都是不一样的token，不要复制我的链接去访问。</p>
-<p><img src="/img/blogs/tensorflow/jupyter_start.png" alt="jupyter启动图"></p>
+<blockquote>
+<p>原题地址：<a href="https://leetcode.com/problems/jewels-and-stones/" target="_blank" rel="noopener">https://leetcode.com/problems/jewels-and-stones/</a></p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>不瞒大家，读完题目后，我脑子里的第一反应是两层for循环套起走。🤦 </p>
+<p>不过紧接着我就知道这一定是错的，这种思路当然可以实现题目的需求，但是解法实在是低级。时间复杂度是 <script type="math/tex">O(n^2)</script></p>
+<p>我能那么快想到解决方法，得益于前几天看的《啊哈！算法》中的第一个算法：桶排序。</p>
+<p>我借鉴了桶排序的思路, 迅速想到要把<strong><em>S</em></strong>中的每个字符转换成map的形式（key-value），key是字符的值，value是key在<strong><em>S</em></strong>中出现的次数。<br>这样可以减少统计宝石个数时所需要的循环次数。</p>
+<p>然后通过遍历<strong><em>J</em></strong>中的字符，去map中查找数量，最后累加起来即可。</p>
+<p>那么程序的时间复杂度就降为了 <script type="math/tex">O(n)</script>。</p>
+<p>看到这里如果你已清楚思路的话，请你自己先动手实践一下，切勿直接看我的实现代码。<br>毕竟，<strong>实践出真知</strong>。<br>代码仅供参考。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="Golang实现"><a href="#Golang实现" class="headerlink" title="Golang实现"></a>Golang实现</h3><p><a href="https://github.com/cook-coder/my-leetcode-solution/tree/master/easy/771" target="_blank" rel="noopener">https://github.com/cook-coder/my-leetcode-solution/tree/master/easy/771</a></p>
+<h3 id="嘚瑟"><a href="#嘚瑟" class="headerlink" title="嘚瑟"></a>嘚瑟</h3><p>最后请容我嘚瑟一下，贴个程序提交之后的评价图<br><img src="/img/blogs/leetcode/771.png" alt="771"></p>
 
         </section>
     </article>
@@ -133,7 +139,7 @@
     <div class="toc-container">
         <h1>目录</h1>
         <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境需求"><span class="toc-number">1.</span> <span class="toc-text">环境需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动步骤"><span class="toc-number">2.</span> <span class="toc-text">启动步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-拉取TensorFlow镜像"><span class="toc-number">2.1.</span> <span class="toc-text">1. 拉取TensorFlow镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-运行该镜像"><span class="toc-number">2.2.</span> <span class="toc-text">2. 运行该镜像</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原题"><span class="toc-number">1.</span> <span class="toc-text">原题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#771-Jewels-and-Stone"><span class="toc-number">1.1.</span> <span class="toc-text">771. Jewels and Stone</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路"><span class="toc-number">2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现"><span class="toc-number">3.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Golang实现"><span class="toc-number">3.1.</span> <span class="toc-text">Golang实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#嘚瑟"><span class="toc-number">3.2.</span> <span class="toc-text">嘚瑟</span></a></li></ol></li></ol>
         </div>
     </div>
     
@@ -144,8 +150,8 @@
 <script type="text/javascript">
   /* * * CONFIGURATION VARIABLES * * */
   var disqus_shortname = "wild2pro";
-  var disqus_identifier = "http://wild2pro.com/RunTensorflowWithDocker.html";
-  var disqus_url = "http://wild2pro.com/RunTensorflowWithDocker.html";
+  var disqus_identifier = "http://wild2pro.com/LeetCodeAlgorithm771JewelsAndStones.html";
+  var disqus_url = "http://wild2pro.com/LeetCodeAlgorithm771JewelsAndStones.html";
 
   isAgent(getDisqus)
 

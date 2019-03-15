@@ -100,6 +100,7 @@
             
           </div>
           <h2 id="张量的数学概念"><a href="#张量的数学概念" class="headerlink" title="张量的数学概念"></a>张量的数学概念</h2><p>在数学里，张量是一种几何实体，广义上表示任意形式的“数据”。张量可以理解为0阶（rank）标量、1阶向量和2阶矩阵在高维空间上的推广，张量的阶描述它表示数据的最大维度。</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -136,6 +137,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="TensorFlow中的张量"><a href="#TensorFlow中的张量" class="headerlink" title="TensorFlow中的张量"></a>TensorFlow中的张量</h2><p>在TensorFlow中，张量（Tensor）表示某种相同<strong>数据类型</strong>的<strong>多维数组</strong>。</p>
 <p>因此，张量有两个重要属性：</p>
 <ol>
@@ -304,5 +306,20 @@
 <script src="/lib/jquery.fancybox.min.js"></script>
 
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
