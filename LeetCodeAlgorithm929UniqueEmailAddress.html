@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>LeetCode算法题929解题思路 | 写程序的厨子</title>
+  <meta name="keywords" content="leetcode,algorithm | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="The solution of leetcode algorithm problem 929. | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e9e3e1673126f293b95cbd6dd134e45d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <meta name="baidu-site-verification" content="VCMZKpmAIs">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>LeetCode算法题929解题思路</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年03月25日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/leetcode/">leetcode</a>/ <a class="article-category-link" href="/categories/leetcode/algorithm/">algorithm</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#leetcode" class="tag">leetcode</a>
+
+  <a href="/tags/#algorithm" class="tag">algorithm</a>
+
+
+            
+          </div>
+          <h2 id="原题"><a href="#原题" class="headerlink" title="原题"></a>原题</h2><h3 id="929-Unique-Email-Addresses"><a href="#929-Unique-Email-Addresses" class="headerlink" title="929. Unique Email Addresses"></a>929. Unique Email Addresses</h3><p>Every email consists of a local name and a domain name, separated by the @ sign.</p>
+<p>For example, in alice@leetcode.com, alice is the local name, and leetcode.com is the domain name.</p>
+<p>Besides lowercase letters, these emails may contain ‘.’s or ‘+’s.</p>
+<p>If you add periods (‘.’) between some characters in the local name part of an email address, mail sent there will be forwarded to the same address without dots in the local name.  For example, “alice.z@leetcode.com” and “alicez@leetcode.com” forward to the same email address.  (Note that this rule does not apply for domain names.)</p>
+<p>If you add a plus (‘+’) in the local name, everything after the first plus sign will be ignored. This allows certain emails to be filtered, for example m.y+name@email.com will be forwarded to my@email.com.  (Again, this rule does not apply for domain names.)</p>
+<p>It is possible to use both of these rules at the same time.</p>
+<p>Given a list of emails, we send one email to each address in the list.  How many different addresses actually receive mails? </p>
+<h4 id="Example-1"><a href="#Example-1" class="headerlink" title="Example 1"></a>Example 1</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: [&quot;test.email+alex@leetcode.com&quot;,&quot;test.e.mail+bob.cathy@leetcode.com&quot;,&quot;testemail+david@lee.tcode.com&quot;]</span><br><span class="line">Output: 2</span><br><span class="line">Explanation: &quot;testemail@leetcode.com&quot; and &quot;testemail@lee.tcode.com&quot; actually receive mails</span><br></pre></td></tr></table></figure>
+<h4 id="Note"><a href="#Note" class="headerlink" title="Note"></a>Note</h4><ul>
+<li>1&lt;= emails[i].length &lt;= 100</li>
+<li>1&lt;= emails.length &lt;= 100</li>
+<li>Each emails[i] contains exactly one ‘@’ character.</li>
+</ul>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>看完题目后首先想到用string.Split()来把每一个email地址拆分成local name 和 domain name组成的数组，然后在处理local name部分, 最后用strings.Join()把local name 和 domain name合并成完整的email地址。</p>
+<h4 id="思路1的实现："><a href="#思路1的实现：" class="headerlink" title="思路1的实现："></a>思路1的实现：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">func numUniqueEmails(emails []string) int &#123;</span><br><span class="line">    var uniqueEmails = map[string]bool&#123;&#125;</span><br><span class="line">    for _, email := range emails &#123;</span><br><span class="line">        emailComponents := strings.Split(email, &quot;@&quot;)</span><br><span class="line">        localName := emailComponents[0]</span><br><span class="line">        if plusIndex := strings.Index(localName, &quot;+&quot;); plusIndex != -1 &#123;</span><br><span class="line">            localName = localName[0:plusIndex]</span><br><span class="line">        &#125;</span><br><span class="line">        localName = strings.Replace(localName, &quot;.&quot;, &quot;&quot;, -1)</span><br><span class="line">        emailComponents[0] = localName</span><br><span class="line">        uniqueEmails[strings.Join(emailComponents, &quot;@&quot;)] = true</span><br><span class="line">    &#125;</span><br><span class="line">    return len(uniqueEmails)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="思路1的结果"><a href="#思路1的结果" class="headerlink" title="思路1的结果:"></a>思路1的结果:</h4><p><img src="/img/blogs/leetcode/929_00.png" alt=""></p>
+<blockquote>
+<p>毫无疑问，这个思路是有问题的，空间和时间都不行。</p>
+</blockquote>
+<h3 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h3><p>字符串本质是个数组，那么我们通过下标的方式来截取字符串，看看效率会不会高一些</p>
+<h4 id="思路2的实现"><a href="#思路2的实现" class="headerlink" title="思路2的实现"></a>思路2的实现</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">func numUniqueEmails(emails []string) int &#123;</span><br><span class="line">    var uniqueEmails = map[string]bool&#123;&#125;</span><br><span class="line">    for _, email := range emails &#123;</span><br><span class="line">        localName := email[0:strings.Index(email, &quot;@&quot;)]</span><br><span class="line">        domainName := email[strings.Index(email, &quot;@&quot;)+1:]</span><br><span class="line">        if plusIndex := strings.Index(localName, &quot;+&quot;); plusIndex &gt; -1 &#123;</span><br><span class="line">            localName = localName[0:plusIndex]</span><br><span class="line">        &#125;</span><br><span class="line">        if dotIndex := strings.Index(localName, &quot;.&quot;); dotIndex &gt; -1 &#123;</span><br><span class="line">            localName = strings.Replace(localName, &quot;.&quot;, &quot;&quot;, -1)</span><br><span class="line">        &#125;</span><br><span class="line">        uniqueEmails[localName+&quot;@&quot;+domainName] = true</span><br><span class="line">    &#125;</span><br><span class="line">    return len(uniqueEmails)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="思路2的结果"><a href="#思路2的结果" class="headerlink" title="思路2的结果"></a>思路2的结果</h4><p><img src="/img/blogs/leetcode/929_01.png" alt=""></p>
+<blockquote>
+<p>结果好很多，但是还是不能令人满意</p>
+</blockquote>
+<h3 id="进一步改进"><a href="#进一步改进" class="headerlink" title="进一步改进"></a>进一步改进</h3><h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>观察思路2的实现，发现遗漏了一个可以优化的地方:代码里查找@字符的时候进行了两次，是多余的，所以针对这个地方优化了一下。<br>然后又预先申明了几个变量，避免循环里重复申明<br>根据题目得知emails的长度和emails里面每个元素的长度都不会超过100，所以index相关的都申明为了int8<br>for循环改为下标访问，避免产生更多的内存消耗</p>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">func numUniqueEmailsPro(emails []string) int &#123;</span><br><span class="line">    var uniqueEmails = map[string]bool&#123;&#125;</span><br><span class="line">    var indexOfAt int8</span><br><span class="line">    var localName string</span><br><span class="line">    var plusIndex int8 = -1</span><br><span class="line">    var dotIndex int8 = -1</span><br><span class="line">    for i := 0; i &lt; len(emails); i++ &#123;</span><br><span class="line">        indexOfAt = int8(strings.Index(emails[i], &quot;@&quot;))</span><br><span class="line">        localName = emails[i][0:indexOfAt]</span><br><span class="line">        if plusIndex = int8(strings.Index(localName, &quot;+&quot;)); plusIndex &gt; -1 &#123;</span><br><span class="line">            localName = localName[0:plusIndex]</span><br><span class="line">        &#125;</span><br><span class="line">        if dotIndex = int8(strings.Index(localName, &quot;.&quot;)); dotIndex &gt; -1 &#123;</span><br><span class="line">            localName = strings.Replace(localName, &quot;.&quot;, &quot;&quot;, -1)</span><br><span class="line">        &#125;</span><br><span class="line">        uniqueEmails[localName+&quot;@&quot;+emails[i][indexOfAt+1:]] = true</span><br><span class="line">    &#125;</span><br><span class="line">    return len(uniqueEmails)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="改进结果"><a href="#改进结果" class="headerlink" title="改进结果"></a>改进结果</h4><p><img src="/img/blogs/leetcode/929_02.png" alt=""></p>
+<h2 id="复盘"><a href="#复盘" class="headerlink" title="复盘"></a>复盘</h2><p>其实最后一次改进的那几点是一次一次试出来的，但是并不是每一个都有效果，时间上的进步是明显的，但是空间上的就不好评估了，因为空间上在尝试第一次优化的时候就已经只消耗了5.6M，后面就没有变化，只有轻微的排名百分比的变化。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原题"><span class="toc-number">1.</span> <span class="toc-text">原题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#929-Unique-Email-Addresses"><span class="toc-number">1.1.</span> <span class="toc-text">929. Unique Email Addresses</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Example-1"><span class="toc-number">1.1.1.</span> <span class="toc-text">Example 1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Note"><span class="toc-number">1.1.2.</span> <span class="toc-text">Note</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解题思路"><span class="toc-number">2.</span> <span class="toc-text">解题思路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路1"><span class="toc-number">2.1.</span> <span class="toc-text">思路1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#思路1的实现："><span class="toc-number">2.1.1.</span> <span class="toc-text">思路1的实现：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#思路1的结果"><span class="toc-number">2.1.2.</span> <span class="toc-text">思路1的结果:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#思路2"><span class="toc-number">2.2.</span> <span class="toc-text">思路2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#思路2的实现"><span class="toc-number">2.2.1.</span> <span class="toc-text">思路2的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#思路2的结果"><span class="toc-number">2.2.2.</span> <span class="toc-text">思路2的结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进一步改进"><span class="toc-number">2.3.</span> <span class="toc-text">进一步改进</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#思路"><span class="toc-number">2.3.1.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实现"><span class="toc-number">2.3.2.</span> <span class="toc-text">实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#改进结果"><span class="toc-number">2.3.3.</span> <span class="toc-text">改进结果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复盘"><span class="toc-number">3.</span> <span class="toc-text">复盘</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/LeetCodeAlgorithm929UniqueEmailAddress.html";
+  var disqus_url = "http://wild2pro.com/LeetCodeAlgorithm929UniqueEmailAddress.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
