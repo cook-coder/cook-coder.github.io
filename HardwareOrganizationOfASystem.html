@@ -17,9 +17,9 @@
   <link rel="icon" href="/favicon.ico">
   
     
-  <title>iterm2登录服务器每次都要输入passphrase怎么办? | 写程序的厨子</title>
-  <meta name="keywords" content="item2,passphrase | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
-  <meta name="description" content="iterm2下保存passphrase的方法 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <title>Hardware Organization Of A System | 写程序的厨子</title>
+  <meta name="keywords" content="hardware organization | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="Hardware organization of a typical computer system. | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -75,13 +75,13 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>iterm2登录服务器每次都要输入passphrase怎么办?</h1>
+          <h1>Hardware Organization Of A System</h1>
           <div class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018年12月21日</time>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年03月26日</time>
             
               | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/MacUser/">MacUser</a>/ <a class="article-category-link" href="/categories/MacUser/iterm2/">iterm2</a>
+    <a class="article-category-link" href="/categories/Computer-Systems/">Computer Systems</a>
   </div>
 
 
@@ -92,17 +92,37 @@
                   <i class="fa fa-tag" aria-hidden="true"></i>
                 
                
-  <a href="/tags/#Mac Tips" class="tag">Mac Tips</a>
+  <a href="/tags/#Computer Systems" class="tag">Computer Systems</a>
 
 
             
           </div>
-          <h3 id="烦恼"><a href="#烦恼" class="headerlink" title="烦恼"></a>烦恼</h3><p>因为公司考虑安全性的问题，生成公私钥的时候设置了passphrase；然后每次ssh登录服务器的时候都会提示输入passphrase, 服务器一多就很烦，每次都要输入。</p>
-<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><ol>
-<li>换个厉害一点的ssh客户端软件, 可以记录passphrase自动填写的那种。</li>
-<li>设置一下自己的~/.ssh/config文件，没有就直接创建一个config文件就好了。配置如下：</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Host *</span><br><span class="line">    UseKeychain yes</span><br></pre></td></tr></table></figure>
+          <p>今天阅读的是《深入理解计算机系统》英文版的1.4节。<br>对于我这种基础薄弱的coder来说，今天的阅读还是蛮有用的。</p>
+<p>首先上个图，方便讲解：<br><img src="/img/blogs/computer_systems/03.png" alt=""></p>
+<h3 id="Buses"><a href="#Buses" class="headerlink" title="Buses"></a>Buses</h3><p>总线：用于系统间各个组件的通信。<br>用来传输固定大小的字节块（把它叫做字words）,大部分机器的字的大小为4字节（32位）或者8字节（64位）</p>
+<h3 id="I-O-Devices"><a href="#I-O-Devices" class="headerlink" title="I/O Devices"></a>I/O Devices</h3><p>I/O设备是计算机连接外部世界的桥梁。</p>
+<h4 id="典型的I-O设备"><a href="#典型的I-O设备" class="headerlink" title="典型的I/O设备"></a>典型的I/O设备</h4><ul>
+<li>键盘: 接收用户输入</li>
+<li>鼠标: 接收用户输入</li>
+<li>显示器: 输出结果给用户</li>
+<li>硬盘: 长期存储程序和数据</li>
+</ul>
+<h4 id="I-O总线-和-I-O设备的连接"><a href="#I-O总线-和-I-O设备的连接" class="headerlink" title="I/O总线 和 I/O设备的连接"></a>I/O总线 和 I/O设备的连接</h4><p>两种方式: </p>
+<ul>
+<li>controller: 主板上的芯片组</li>
+<li>adapter: 就是插在主板插槽上的那些模块</li>
+</ul>
+<p>不管哪种模式，它们的目的都是为了在I/O总线和I/O设备之间传输信息。</p>
+<h3 id="Main-Memory"><a href="#Main-Memory" class="headerlink" title="Main Memory"></a>Main Memory</h3><p>主存的是一个暂存设备，当处理器执行程序的时候主存就负责临时保存所执行的程序和与之相关的数据。</p>
+<p>物理上：主存是由动态随机访问存储（DRAM）芯片组成的。</p>
+<p>逻辑上：主存是一个线性的byte数组，每个元素有自己唯一的地址，地址从0开始。</p>
+<h3 id="Processor"><a href="#Processor" class="headerlink" title="Processor"></a>Processor</h3><p>CPU（cental processing unit），是解释执行主存里的指令的引擎。<br>它的核心部分有一个字（word）大小的存储设备（寄存器/register），叫做程序计数器（program counter）。任何时候程序计数器里存储的信息都指向主存里要执行的机器指令。</p>
+<h4 id="CPU的部分操作"><a href="#CPU的部分操作" class="headerlink" title="CPU的部分操作"></a>CPU的部分操作</h4><ul>
+<li>load: 把一个byte或者word从主存复制到寄存器，并覆盖寄存器原来的内容。</li>
+<li>store: 把一个byte或者word从寄存器复制到主存，并覆盖主存原来位置的内容。</li>
+<li>operate: 把两个寄存器的内容（两个word）复制到ALU，ALU对这两个word做算术运算，并把结果存入一个寄存器中，覆盖这个寄存器之前的内容。</li>
+<li>jump: 从指令本身中抽取一个字，复制到程序计数器（PC）中，覆盖PC中之前的值。</li>
+</ul>
 
         </section>
     </article>
@@ -122,7 +142,7 @@
     <div class="toc-container">
         <h1>目录</h1>
         <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#烦恼"><span class="toc-number">1.</span> <span class="toc-text">烦恼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方法"><span class="toc-number">2.</span> <span class="toc-text">解决方法</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Buses"><span class="toc-number">1.</span> <span class="toc-text">Buses</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I-O-Devices"><span class="toc-number">2.</span> <span class="toc-text">I/O Devices</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#典型的I-O设备"><span class="toc-number">2.1.</span> <span class="toc-text">典型的I/O设备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#I-O总线-和-I-O设备的连接"><span class="toc-number">2.2.</span> <span class="toc-text">I/O总线 和 I/O设备的连接</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Main-Memory"><span class="toc-number">3.</span> <span class="toc-text">Main Memory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Processor"><span class="toc-number">4.</span> <span class="toc-text">Processor</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CPU的部分操作"><span class="toc-number">4.1.</span> <span class="toc-text">CPU的部分操作</span></a></li></ol></li></ol>
         </div>
     </div>
     
@@ -133,8 +153,8 @@
 <script type="text/javascript">
   /* * * CONFIGURATION VARIABLES * * */
   var disqus_shortname = "wild2pro";
-  var disqus_identifier = "http://wild2pro.com/iterm2KeepAskingPassphrase.html";
-  var disqus_url = "http://wild2pro.com/iterm2KeepAskingPassphrase.html";
+  var disqus_identifier = "http://wild2pro.com/HardwareOrganizationOfASystem.html";
+  var disqus_url = "http://wild2pro.com/HardwareOrganizationOfASystem.html";
 
   isAgent(getDisqus)
 
