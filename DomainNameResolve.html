@@ -17,7 +17,7 @@
   <link rel="icon" href="/favicon.ico">
   
     
-  <title>域名解析的完美姿势 | 写程序的厨子</title>
+  <title>建站初期域名解析的漂亮姿势 | 写程序的厨子</title>
   <meta name="keywords" content="nginx域名解析 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
   <meta name="description" content="Nginx下的域名解析配置指南 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
@@ -75,9 +75,9 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>域名解析的完美姿势</h1>
+          <h1>建站初期域名解析的漂亮姿势</h1>
           <div class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年02月17日</time>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年03月27日</time>
             
               | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
   <div class="article-category">
@@ -100,6 +100,26 @@
             
           </div>
           <p>平时专职搞开发，基本不动服务器的东西，如今自己要搞个网站，就自己摸索了一下Nginx的配置。</p>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>我有一台服务器，需要搭建两个网站并解析域名，都使用80端口，而且在加上https。</p>
+<p>那么这种情况下，nginx应该如何配置呢？</p>
+<h2 id="具体配置文件"><a href="#具体配置文件" class="headerlink" title="具体配置文件"></a>具体配置文件</h2><h3 id="网站A"><a href="#网站A" class="headerlink" title="网站A"></a>网站A</h3><h4 id="default-conf"><a href="#default-conf" class="headerlink" title="default.conf"></a>default.conf</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">listen       8080;</span><br><span class="line">    server_name  localhost;</span><br><span class="line"></span><br><span class="line">    access_log  /var/log/nginx/host.access.log  main;</span><br><span class="line">    error_log  /var/log/nginx/host.error.log  error;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        root   /usr/share/nginx/html;</span><br><span class="line">        index  index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我只放出了关键配置，说明问题即可。网站B其实和这个也是一样的，根据需求配置即可，并选择另外一个端口号，如8081。</p>
+<h3 id="反向代理nginx配置"><a href="#反向代理nginx配置" class="headerlink" title="反向代理nginx配置"></a>反向代理nginx配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl http2;</span><br><span class="line">    server_name  www.your-domain-name.com;</span><br><span class="line">    #charset utf-8;</span><br><span class="line">    access_log  /var/log/nginx/your-domain-name.com/access.log main;</span><br><span class="line">    error_log  /var/log/nginx/your-domain-name.com/error.log error;</span><br><span class="line"></span><br><span class="line">    ssl_certificate conf.d/1_www.your-domain-name.com_bundle.crt;</span><br><span class="line">    ssl_certificate_key conf.d/2_www.your-domain-name.com.key;</span><br><span class="line">    ssl_session_timeout 5m;</span><br><span class="line">    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;</span><br><span class="line">    ssl_prefer_server_ciphers on;</span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_http_version 1.1;</span><br><span class="line">        proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">        proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">        proxy_set_header Host            $http_host;</span><br><span class="line">        proxy_set_header Connection      &quot;&quot;;</span><br><span class="line">        #proxy_http_version 2.0;</span><br><span class="line"></span><br><span class="line">        proxy_pass http://official_site:8080;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">    listen       443 ssl http2;</span><br><span class="line">    server_name  your-domain-name.com;</span><br><span class="line">    #ssl_certificate conf.d/1_your-domain-name.com_bundle.crt;</span><br><span class="line">    #ssl_certificate_key conf.d/2_your-domain-name.com.key;</span><br><span class="line">    #ssl_session_timeout 5m;</span><br><span class="line">    #ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">    #ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;</span><br><span class="line">    #ssl_prefer_server_ciphers on;</span><br><span class="line">    rewrite ^(.*) https://www.your-domain-name.com$1 permanent;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">    listen       80 http2;</span><br><span class="line">    server_name  www.your-domain-name.com your-domain-name.com;</span><br><span class="line">    rewrite ^(.*) https://www.your-domain-name.com$1 permanent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="关键点说明"><a href="#关键点说明" class="headerlink" title="关键点说明"></a>关键点说明</h4><ul>
+<li>第2行 我配置了http2.0的协议，如果1.1版本的话改成http即可</li>
+<li>第3行 server_name 就是写你要解析的域名</li>
+<li>第8和第9行的路径：我的当前配置文件和.crt .key文件是放在同一个文件夹conf.d/下面的，完整路径<code>/home/reverse_proxy/etc/nginx/conf.d</code>,仅供参考，具体放哪自行决定。只要配置对了就行，出错记得看nginx的error.log。</li>
+<li>第14行 开始 到第23行就是要转发到的目标配置了，只说明一下第22行，proxy_pass 就是写具体的网站根url，因为我用的docker取名为official_site所以配置是这样的，如果不用docker的话可以写<code>http://IP:PORT</code></li>
+<li>第25到35行是把二级域名your-domain-name.com的https请求301跳转到三级域名<a href="https://www.your-domain-name.com" target="_blank" rel="noopener">https://www.your-domain-name.com</a></li>
+<li>第36行到40行是把二级域名和三级域名的http请求都永久跳转到<a href="https://www.your-domain-name.com" target="_blank" rel="noopener">https://www.your-domain-name.com</a></li>
+</ul>
+<h3 id="配置形成的效果"><a href="#配置形成的效果" class="headerlink" title="配置形成的效果"></a>配置形成的效果</h3><ul>
+<li>网站就只能通过https来访问</li>
+<li>二级域名和三级域名都解析，迎合了不同的用户输入域名的习惯</li>
+<li>把二级域名301跳转到三级域名，这样对SEO友好。</li>
+<li>有新域名需要解析到这台服务器的话，照葫芦画瓢配置响应的server就行。</li>
+</ul>
+<p>以上就是自建网站配置nginx需要注意的小技巧，初期嘛，低成本运作就行。</p>
 
         </section>
     </article>
@@ -115,6 +135,13 @@
         
   </div>
   <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景"><span class="toc-number">1.</span> <span class="toc-text">场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#具体配置文件"><span class="toc-number">2.</span> <span class="toc-text">具体配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#网站A"><span class="toc-number">2.1.</span> <span class="toc-text">网站A</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#default-conf"><span class="toc-number">2.1.1.</span> <span class="toc-text">default.conf</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#反向代理nginx配置"><span class="toc-number">2.2.</span> <span class="toc-text">反向代理nginx配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#关键点说明"><span class="toc-number">2.2.1.</span> <span class="toc-text">关键点说明</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置形成的效果"><span class="toc-number">2.3.</span> <span class="toc-text">配置形成的效果</span></a></li></ol></li></ol>
+        </div>
+    </div>
     
   </aside>
 </main>
@@ -233,5 +260,20 @@
 <script src="/lib/jquery.fancybox.min.js"></script>
 
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
