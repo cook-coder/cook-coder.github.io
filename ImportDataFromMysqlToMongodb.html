@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>把mysql里的数据导入到MongoDB | 写程序的厨子</title>
+  <meta name="keywords" content="mysql to mongodb | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="如何把mysql的表里的数据原样导入到MongoDB | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e9e3e1673126f293b95cbd6dd134e45d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <meta name="baidu-site-verification" content="VCMZKpmAIs">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>把mysql里的数据导入到MongoDB</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年04月02日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日常采坑/">日常采坑</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#MongoDB" class="tag">MongoDB</a>
+
+
+            
+          </div>
+          <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>由于一些未知的历史原因，公司某几张表的数据（MySQL）现在是聚合到了ElasticSearch里，但是ES似乎对频繁修改数据的这种场景不太适合。而且懂ES的人离职了，维护ES相关的东西就成了一个大坑。结合现有业务的需求（有聚合，统计之类的场景），我决定尝试一下MongoDB。</p>
+<blockquote>
+<p>这是一个没有实际依据的决定，周围没人懂，只是Google了一些相关信息。</p>
+</blockquote>
+<h2 id="尝试"><a href="#尝试" class="headerlink" title="尝试"></a>尝试</h2><h3 id="导出mysql的数据到MongoDB"><a href="#导出mysql的数据到MongoDB" class="headerlink" title="导出mysql的数据到MongoDB"></a>导出mysql的数据到MongoDB</h3><h4 id="失败的尝试"><a href="#失败的尝试" class="headerlink" title="失败的尝试"></a>失败的尝试</h4><p>由于MongoDB里document都是BSON格式的，所以我直觉上想着MySQL导出JSON格式数据好了，并且查了一下MongoDB导入的命令，确实有支持JSON格式的导入。</p>
+<p>于是我先导出了mysql里的一张表，大概170万数据；导出成JSON格式，有5.6G多一点。<br>但是导入的时候出现了错误，大概意思是格式不正确，忘记截图了，尝试搜索解决方法，但是都没有成功。</p>
+<h4 id="成功的尝试"><a href="#成功的尝试" class="headerlink" title="成功的尝试"></a>成功的尝试</h4><p>好在在搜索的过程中，看了帮助文档，发现还可以导入csv格式的数据。</p>
+<p>接下来就抱着试一试的态度，先把MySQL里的数据导出成csv格式的，只有1.26G左右。文件小了很多，这算一个优势吧。<br>然后尝试导入: <code>mongoimport --host host:port -u username -p password -d db_name -c collection_name --file mysql_data.csv --authenticationDatabase admin --type csv --fieldFile fieldsname.txt</code></p>
+<p>结果导入成功了，接下来就是模拟部分业务场景做一下查询，看看是否有效率问题。</p>
+<h5 id="参数解释"><a href="#参数解释" class="headerlink" title="参数解释"></a>参数解释</h5><ul>
+<li>mongoimport 是官网下载的enterprise版本里的可执行文件之一</li>
+<li>—authenticationDatabase admin 如果是本地连接远程服务器上的MongoDB必须要有这个参数，admin可以替换为你登录用户授权的相应database名称，如果你不清楚是什么，那就先试试admin能不能成功吧。</li>
+<li>—fieldFile 参数为字段名文件。需要把MySQL里对应表的字段名（可以重命名成自己想要的字段名）整理成一个文件，每一个字段占一行。</li>
+</ul>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起因"><span class="toc-number">1.</span> <span class="toc-text">起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试"><span class="toc-number">2.</span> <span class="toc-text">尝试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#导出mysql的数据到MongoDB"><span class="toc-number">2.1.</span> <span class="toc-text">导出mysql的数据到MongoDB</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#失败的尝试"><span class="toc-number">2.1.1.</span> <span class="toc-text">失败的尝试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#成功的尝试"><span class="toc-number">2.1.2.</span> <span class="toc-text">成功的尝试</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#参数解释"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">参数解释</span></a></li></ol></li></ol></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/ImportDataFromMysqlToMongodb.html";
+  var disqus_url = "http://wild2pro.com/ImportDataFromMysqlToMongodb.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
