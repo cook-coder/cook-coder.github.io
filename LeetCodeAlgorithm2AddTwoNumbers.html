@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>LeetCode算法题2解题思路 | 写程序的厨子</title>
+  <meta name="keywords" content="leetcode algorithm | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="The solution of add two numbers. | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e9e3e1673126f293b95cbd6dd134e45d";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <meta name="baidu-site-verification" content="VCMZKpmAIs">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>LeetCode算法题2解题思路</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年04月03日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/leetcode/">leetcode</a>/ <a class="article-category-link" href="/categories/leetcode/algorithm/">algorithm</a>/ <a class="article-category-link" href="/categories/leetcode/algorithm/medium/">medium</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#algorithm" class="tag">algorithm</a>
+
+  <a href="/tags/#linked list" class="tag">linked list</a>
+
+
+            
+          </div>
+          <h2 id="原题"><a href="#原题" class="headerlink" title="原题"></a>原题</h2><h3 id="2-Add-Two-Numbers"><a href="#2-Add-Two-Numbers" class="headerlink" title="2. Add Two Numbers"></a>2. Add Two Numbers</h3><p>You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
+<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
+<p>Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)</span><br><span class="line">Output: 7 -&gt; 0 -&gt; 8</span><br><span class="line">Explanation: 342 + 465 = 807.</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>原题地址：<a href="https://leetcode.com/problems/add-two-numbers/" target="_blank" rel="noopener">https://leetcode.com/problems/add-two-numbers/</a></p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><p>首先此题需要掌握链表的知识，不仅要知道链表的构造，还要会自己用代码实现一个链表。</p>
+<h3 id="错误思路"><a href="#错误思路" class="headerlink" title="错误思路"></a>错误思路</h3><p>首先，这题我经历了6连跪，每次都觉得差不多的时候，提交的结果都是wrong。<br>根据一个一个出错的测试用例，我发现是自己想偷懒的思维方式导致的。</p>
+<h4 id="偷懒的想法"><a href="#偷懒的想法" class="headerlink" title="偷懒的想法"></a>偷懒的想法</h4><p>遍历出链表的每个值后把它们各自处理成两个整数，然后用这两个整数相加得到总和之后，在把总和处理成链表输出。但是忘记处理了l.Val=0的情况，导致很多计算错误的问题。</p>
+<h3 id="更正思维"><a href="#更正思维" class="headerlink" title="更正思维"></a>更正思维</h3><h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><ul>
+<li>先把链表转整数，再把结果转链表，要两次for循环</li>
+<li>转整数过程中有一些情况很难想到，覆盖不全，导致连跪好几次</li>
+</ul>
+<h4 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h4><ul>
+<li>放弃转整数的想法，每次循环单独处理，设置进位标志即可覆盖所有情况</li>
+<li>用一次for循环，遍历l1和l2的时候同时也就生成结果链表</li>
+</ul>
+<p>代码仅供参考。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="Golang实现"><a href="#Golang实现" class="headerlink" title="Golang实现"></a>Golang实现</h3><p><a href="https://github.com/cook-coder/my-leetcode-solution/tree/master/medium/2" target="_blank" rel="noopener">https://github.com/cook-coder/my-leetcode-solution/tree/master/medium/2</a></p>
+<h3 id="成绩不稳定"><a href="#成绩不稳定" class="headerlink" title="成绩不稳定"></a>成绩不稳定</h3><h4 id="一会执行时间可以超越100"><a href="#一会执行时间可以超越100" class="headerlink" title="一会执行时间可以超越100%"></a>一会执行时间可以超越100%</h4><p><img src="/img/blogs/leetcode/2_00.png" alt=""></p>
+<h4 id="一会执行时间又会翻倍"><a href="#一会执行时间又会翻倍" class="headerlink" title="一会执行时间又会翻倍"></a>一会执行时间又会翻倍</h4><p><img src="/img/blogs/leetcode/2_01.png" alt=""></p>
+<blockquote>
+<p>百思不得其解，希望有高人可以指点一二。</p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原题"><span class="toc-number">1.</span> <span class="toc-text">原题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Add-Two-Numbers"><span class="toc-number">1.1.</span> <span class="toc-text">2. Add Two Numbers</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路"><span class="toc-number">2.</span> <span class="toc-text">思路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前置知识"><span class="toc-number">2.1.</span> <span class="toc-text">前置知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#错误思路"><span class="toc-number">2.2.</span> <span class="toc-text">错误思路</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#偷懒的想法"><span class="toc-number">2.2.1.</span> <span class="toc-text">偷懒的想法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更正思维"><span class="toc-number">2.3.</span> <span class="toc-text">更正思维</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题："><span class="toc-number">2.3.1.</span> <span class="toc-text">问题：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法："><span class="toc-number">2.3.2.</span> <span class="toc-text">方法：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现"><span class="toc-number">3.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Golang实现"><span class="toc-number">3.1.</span> <span class="toc-text">Golang实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#成绩不稳定"><span class="toc-number">3.2.</span> <span class="toc-text">成绩不稳定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#一会执行时间可以超越100"><span class="toc-number">3.2.1.</span> <span class="toc-text">一会执行时间可以超越100%</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#一会执行时间又会翻倍"><span class="toc-number">3.2.2.</span> <span class="toc-text">一会执行时间又会翻倍</span></a></li></ol></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/LeetCodeAlgorithm2AddTwoNumbers.html";
+  var disqus_url = "http://wild2pro.com/LeetCodeAlgorithm2AddTwoNumbers.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
