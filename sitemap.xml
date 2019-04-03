@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://wild2pro.com/ImportDataFromMysqlToMongodb.html</loc>
+    
+    <lastmod>2019-04-03T13:09:03.033Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://wild2pro.com/LeetCodeAlgorithm929UniqueEmailAddress.html</loc>
     
     <lastmod>2019-04-03T13:07:52.946Z</lastmod>
@@ -26,13 +33,6 @@
     <loc>http://wild2pro.com/LeetCodeAlgorithm2AddTwoNumbers.html</loc>
     
     <lastmod>2019-04-03T13:05:38.008Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://wild2pro.com/ImportDataFromMysqlToMongodb.html</loc>
-    
-    <lastmod>2019-04-02T14:49:12.722Z</lastmod>
     
   </url>
   
