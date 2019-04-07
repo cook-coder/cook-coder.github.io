@@ -17,9 +17,9 @@
   <link rel="icon" href="/favicon.ico">
   
     
-  <title>WhatIsTheNatureOfPHPArray | 写程序的厨子</title>
-  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
-  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <title>PHP数组的本质是什么 | 写程序的厨子</title>
+  <meta name="keywords" content="PHP,array | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="剖析PHP数组的本质。 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -75,13 +75,27 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>WhatIsTheNatureOfPHPArray</h1>
+          <h1>PHP数组的本质是什么</h1>
           <div class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年04月06日</time>
             
             
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#PHP" class="tag">PHP</a>
+
+  <a href="/tags/#array" class="tag">array</a>
+
+
+            
           </div>
-          
+          <h2 id="PHP数组"><a href="#PHP数组" class="headerlink" title="PHP数组"></a>PHP数组</h2><p>用过PHP的都知道，PHP中的数组非常灵活，可变长度，不限类型，还可以定义为key-value模式。跟我们在C语言等其他语言中所说的数组完全是不一样的。那么问题来了，PHP的数组真的是数组么？</p>
+<h3 id="官方解释"><a href="#官方解释" class="headerlink" title="官方解释"></a>官方解释</h3><p>An array in PHP is actually an ordered map. A map is a type that associates value to keys. This type is optimized for several different uses; it can treated as an array, list(vetor), hash table(an implementation of a map), dictionary, collection, stack, queue, and probably more. As array values can be other arrays, trees and multidimensional arrays are also possible.</p>
+<p>官方解释是PHP的数组实际上是一个有序map。</p>
+<p>本来想自己研究下源码看看是怎么回事，可是水平不够啊，后来就找了资料学习了一下。<br><a href="http://nikic.github.io/2012/03/28/Understanding-PHPs-internal-array-implementation.html" target="_blank" rel="noopener">http://nikic.github.io/2012/03/28/Understanding-PHPs-internal-array-implementation.html</a></p>
+
         </section>
     </article>
     
@@ -96,6 +110,13 @@
         
   </div>
   <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP数组"><span class="toc-number">1.</span> <span class="toc-text">PHP数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#官方解释"><span class="toc-number">1.1.</span> <span class="toc-text">官方解释</span></a></li></ol></li></ol>
+        </div>
+    </div>
     
   </aside>
 </main>
@@ -214,20 +235,5 @@
 <script src="/lib/jquery.fancybox.min.js"></script>
 
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
