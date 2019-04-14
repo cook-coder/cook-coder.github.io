@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://wild2pro.com/IntroductionOfStack.html</loc>
+    <lastmod>2019-04-14T08:56:02.955Z</lastmod>
+  </url>  <url>
+    <loc>http://wild2pro.com/WhatIsTheNatureOfPHPArray.html</loc>
+    <lastmod>2019-04-14T07:53:18.657Z</lastmod>
+  </url>  <url>
     <loc>http://wild2pro.com/LeetCodeAlgorithm476NumberComplement.html</loc>
-    <lastmod>2019-04-14T02:56:37.054Z</lastmod>
+    <lastmod>2019-04-14T02:57:04.570Z</lastmod>
   </url>  <url>
     <loc>http://wild2pro.com/HowToChangeCentos7RootPassword.html</loc>
     <lastmod>2019-04-14T02:20:52.316Z</lastmod>
-  </url>  <url>
-    <loc>http://wild2pro.com/WhatIsTheNatureOfPHPArray.html</loc>
-    <lastmod>2019-04-07T03:39:48.814Z</lastmod>
   </url>  <url>
     <loc>http://wild2pro.com/CacheMatters.html</loc>
     <lastmod>2019-04-05T07:31:37.631Z</lastmod>
