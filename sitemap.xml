@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://wild2pro.com/BasicThingsEveryProgrammersShouldKnow.html</loc>
+    
+    <lastmod>2019-04-21T09:54:14.102Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://wild2pro.com/LeetCodeAlgorithm1021RemoveOutermostParentheses.html</loc>
     
     <lastmod>2019-04-19T06:58:17.107Z</lastmod>
