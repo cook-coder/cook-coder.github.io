@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://wild2pro.com/LeetCodeAlgorithm832.html</loc>
+    
+    <lastmod>2019-04-27T14:28:46.870Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://wild2pro.com/LeetCodeAlgorithm1021RemoveOutermostParentheses.html</loc>
+    
+    <lastmod>2019-04-27T08:29:34.580Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://wild2pro.com/BasicThingsEveryProgrammersShouldKnow01.html</loc>
     
     <lastmod>2019-04-27T02:56:27.571Z</lastmod>
@@ -26,13 +40,6 @@
     <loc>http://wild2pro.com/BasicThingsEveryProgrammersShouldKnow.html</loc>
     
     <lastmod>2019-04-21T09:54:14.102Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://wild2pro.com/LeetCodeAlgorithm1021RemoveOutermostParentheses.html</loc>
-    
-    <lastmod>2019-04-19T06:58:17.107Z</lastmod>
     
   </url>
   
