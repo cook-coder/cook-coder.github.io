@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>MongoDBTips | 写程序的厨子</title>
+  <meta name="keywords" content="MongoDB | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="MongoDB建数据模型时需要注意的地方。 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>MongoDBTips</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年04月28日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MongoDB/">MongoDB</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#MongoDB" class="tag">MongoDB</a>
+
+
+            
+          </div>
+          <p>最新在读MongoDB的资料，记录了一些入门须知，供大家参考，<br>摘自《MongoDB Basics》</p>
+<h3 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h3><ol>
+<li>Collection的容量默认是可变的，但是也可以设置为固定大小的，当达到最大值后，新数据会覆盖旧的数据</li>
+<li>取名可以包含字母和数字，但是$不能用，也不能是空字符串，不能以”system.“开头。</li>
+<li>名字要简短，9个字符以内最佳。虽然不超过118个字符都可以，但不建议取太长的名字，对性能会有影响。</li>
+</ol>
+<h3 id="Namespace"><a href="#Namespace" class="headerlink" title="Namespace"></a>Namespace</h3><p>Namespace这个概念我不去看书的话也不会注意到的，有下面几点需要知道：</p>
+<ol>
+<li>一个数据库默认最大可包含24000个Namespace</li>
+<li>每个Collection至少包含两个Namespace，一个是Collection的名字，一个是_id字段的索引</li>
+<li>每建立一个索引就会消耗一个Namespace的可用数</li>
+<li>所以理论上一个Database最多可以包含12000个Collection</li>
+<li>Namespace的数量限制可以通过mongod命令的nssize参数调整</li>
+</ol>
+<h3 id="Document"><a href="#Document" class="headerlink" title="Document"></a>Document</h3><p>Document是由一些key-value键值对组成的。</p>
+<ul>
+<li>key是字符串类型</li>
+<li>value可以是很多类型，甚至是二进制数据</li>
+</ul>
+<h4 id="value的类型"><a href="#value的类型" class="headerlink" title="value的类型"></a>value的类型</h4><ul>
+<li>string</li>
+<li>integer</li>
+<li>boolean</li>
+<li>double</li>
+<li>Min/Max keys</li>
+<li>arrays</li>
+<li>timestamp</li>
+<li>object</li>
+<li>null</li>
+<li>symbol</li>
+<li>Date</li>
+<li>ObjectID</li>
+<li>Binary data</li>
+<li>Regular expression</li>
+<li>JavaScript Code</li>
+</ul>
+<h4 id="Embedding-vs-Referencing"><a href="#Embedding-vs-Referencing" class="headerlink" title="Embedding vs. Referencing"></a>Embedding vs. Referencing</h4><p>Remember that every reference requires another query in database.</p>
+<p>使用MongoDB的原则就是尽量把相关联的数据组织到一个Document里面，这样查询更加高效。</p>
+<h3 id="id"><a href="#id" class="headerlink" title="_id"></a>_id</h3><p>document默认会自动生成一个_id主键字段，无需显示申明</p>
+<p>但是也可以手动维护该字段的值：通过该方法可以手动设置主键值，ObjectId(长度为24的16进制字符串)</p>
+<h3 id="Index"><a href="#Index" class="headerlink" title="Index"></a>Index</h3><ul>
+<li>每个Collection最多可以建立64个索引</li>
+<li>所有的索引信息都存储在system.indexes这个Collection里面，可以通过db.system.indexes.find()查找</li>
+<li>查询某个Collection的索引：db.collection.getIndexes()</li>
+</ul>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Collection"><span class="toc-number">1.</span> <span class="toc-text">Collection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Namespace"><span class="toc-number">2.</span> <span class="toc-text">Namespace</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Document"><span class="toc-number">3.</span> <span class="toc-text">Document</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#value的类型"><span class="toc-number">3.1.</span> <span class="toc-text">value的类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Embedding-vs-Referencing"><span class="toc-number">3.2.</span> <span class="toc-text">Embedding vs. Referencing</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#id"><span class="toc-number">4.</span> <span class="toc-text">_id</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Index"><span class="toc-number">5.</span> <span class="toc-text">Index</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/MongoDBTips.html";
+  var disqus_url = "http://wild2pro.com/MongoDBTips.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
