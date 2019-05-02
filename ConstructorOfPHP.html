@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>PHP构造器的&#34;坑&#34; | 写程序的厨子</title>
+  <meta name="keywords" content="PHP Constructor | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="工作中居然被PHP构造器坑到了一把 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>PHP构造器的&quot;坑&quot;</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月02日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#PHP" class="tag">PHP</a>
+
+
+            
+          </div>
+          <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>从学PHP的时候起我就知道PHP构造器应该是用<code>__construct</code>方法，<br>但是最近在接入微信的搜一搜功能的时候却被坑了一把。</p>
+<h3 id="坑1-腾讯的示例代码"><a href="#坑1-腾讯的示例代码" class="headerlink" title="坑1-腾讯的示例代码"></a>坑1-腾讯的示例代码</h3><p>微信搜一搜文档中下载的PHP示例代码中，构造函数使用Java风格写的，就是构造函数和类名相同。<br><img src="/img/blogs/php/php_con_00.JPG" alt=""></p>
+<p>而标准写法应该是下面这种<br><img src="/img/blogs/php/php_con_01.JPG" alt=""></p>
+<p>由于以前也写过Java，所以一开始看示例代码的时候没有发现问题，然后我也通过php-cli运行了示例代码，是没有问题的。<br>当然，后来回想一下是自己忽略了一些warning信息才导致最终踩到坑。但是代码运行结果是正确的。<br>后来我就把示例代码搬到了项目里，结果就老是在初始化的时候没有能够正确设置对应的类属性，我就觉得奇怪，通过debug了之后才突然意识到是构造函数没写对。</p>
+<p>我就很奇怪为什么相同版本的PHP(7.0)，命令行就可以跑出结果，通过fpm解释就错了呢。</p>
+<h3 id="坑2-PHP官方文档"><a href="#坑2-PHP官方文档" class="headerlink" title="坑2-PHP官方文档"></a>坑2-PHP官方文档</h3><p>我先查看的中文文档，现在我直接画出了关键点，但是在我查问题的时候，我关注到的却不是红线标出的命名空间问题，而是自”PHP5.3.3起”，而我用的是PHP7.0，我自然地就觉得老的构造方法就是应该失效了才对呀。<br><img src="/img/blogs/php/php_con_03.png" alt=""></p>
+<p>在我准备些文章吐槽为啥php-cli和php-fpm解释代码的效果不一致的时候，我决定再去看看英文文档怎么写的，因为经验告诉我好多翻译的文档都不是最新的。<br><img src="/img/blogs/php/php_con_02.png" alt=""></p>
+<p>首先我就看到了最大的区别，一个红色的warning部分，写了7.0之后就会弃用老的构造方法，后面可能会直接移除。我就以为自己找到了问题的原因了，很得意的说：果然中文文档坑人。</p>
+<p>然而我又一次仔细阅读了英文的这部分文档之后，发现了本质的问题并不是红色的warning部分。而是最后一句”This change does’nt affect non-namespaced classes.”</p>
+<p>这下我才真正明白造成我认为的php-cli和php-fpm解释代码不一致的现象的锅在命名空间这。<br>腾讯给的示例代码是传统的PHP风格写的代码，调用其他文件的类或者函数是通过include方法，并没有命名空间的概念。<br>而我移到项目里面之后，我添加了命名空间，所以就直接跑不通，报错了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实，从这个小问题中我还是能看到自己的一些问题。</p>
+<ol>
+<li>运行示例代码的时候不仔细，忽略了告警信息，导致问题延后发现。</li>
+<li>当调试发现问题之后，急于吐槽别人是坑货。</li>
+<li>很幸运，我有一颗探寻真相的心，但是阅读文档不够仔细。可能也是中文翻译之后，遗失了原来的重点，仔细对比一下原文和翻译，翻译的意思没有问题，但是丢失了<strong>转折</strong>这个元素，如果能在最后一句前面加一个<strong>“但是，”</strong>就会突出原文想表达的意思了。</li>
+<li>看英文原版文档确实很重要，当我再次查看原版文档的时候才真正get到了这个问题的本质，不然我就真的连PHP官方文档一起吐槽了。原版文档有两个优势：1. 文档最新最全；2. 重点突出，语义明确，容易获取关键信息。</li>
+</ol>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起因"><span class="toc-number">1.</span> <span class="toc-text">起因</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#坑1-腾讯的示例代码"><span class="toc-number">1.1.</span> <span class="toc-text">坑1-腾讯的示例代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#坑2-PHP官方文档"><span class="toc-number">1.2.</span> <span class="toc-text">坑2-PHP官方文档</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">2.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/ConstructorOfPHP.html";
+  var disqus_url = "http://wild2pro.com/ConstructorOfPHP.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
