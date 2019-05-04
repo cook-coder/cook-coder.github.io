@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>单元测试 | 写程序的厨子</title>
+  <meta name="keywords" content="单元测试 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="单元测试第一课，认识单元测试。 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>单元测试</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月04日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/程序员修养/">程序员修养</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#单元测试" class="tag">单元测试</a>
+
+
+            
+          </div>
+          <h2 id="原文地址"><a href="#原文地址" class="headerlink" title="原文地址"></a>原文地址</h2><p><a href="https://stackify.com/unit-testing-basics-best-practices/" target="_blank" rel="noopener">https://stackify.com/unit-testing-basics-best-practices/</a></p>
+<h2 id="单元测试概念"><a href="#单元测试概念" class="headerlink" title="单元测试概念"></a>单元测试概念</h2><h3 id="哪些不算单元测试"><a href="#哪些不算单元测试" class="headerlink" title="哪些不算单元测试"></a>哪些不算单元测试</h3><ol>
+<li>如果你写的的代码是往数据库里写东西，或者从磁盘读文件，那么你就不需要写单元测试。即，依赖于环境，没有设置好就会出错的东西是不需要写单元测试的。</li>
+<li>单元测试不能被当做其他类型的测试。单元测试不会生成一堆随机的数据去调用你的应用来进行测试。</li>
+<li>单元测试不测试系统的多个组件和其工作方式。比如从命令行得到一个输入，来测试输出结果，这是一个端到端的系统测试，不是单元测试。</li>
+<li>不能出错。单元测试不能报错，与预期结果不符。</li>
+</ol>
+<h3 id="什么是单元测试"><a href="#什么是单元测试" class="headerlink" title="什么是单元测试"></a>什么是单元测试</h3><p>单元测试隔离并测试特定的代码单元。听起来有点绕。<br>你可以把单元认为是一个方法，一个方法做特定的事情，测试一个方法就是测试特定的事情。不要企图创建一个什么都测试的东西。</p>
+<h2 id="单元测试最佳实践"><a href="#单元测试最佳实践" class="headerlink" title="单元测试最佳实践"></a>单元测试最佳实践</h2><h3 id="1-Arrange-Act-Assert"><a href="#1-Arrange-Act-Assert" class="headerlink" title="1. Arrange, Act, Assert"></a>1. Arrange, Act, Assert</h3><h4 id="Arrage"><a href="#Arrage" class="headerlink" title="Arrage"></a>Arrage</h4><p>准备好测试需要的前置条件，比如示例化类，准备好测试数据等等。</p>
+<h4 id="Act"><a href="#Act" class="headerlink" title="Act"></a>Act</h4><p>调用需要测试的方法。</p>
+<h4 id="Assert"><a href="#Assert" class="headerlink" title="Assert"></a>Assert</h4><p>对结果进行断言。</p>
+<h3 id="2-一个测试方法只能有一个断言"><a href="#2-一个测试方法只能有一个断言" class="headerlink" title="2. 一个测试方法只能有一个断言"></a>2. 一个测试方法只能有一个断言</h3><p>这样的话结构清晰，逻辑清楚，而且断言结果容易判断出问题所在位置。</p>
+<h3 id="3-避免测试出现相互依赖"><a href="#3-避免测试出现相互依赖" class="headerlink" title="3. 避免测试出现相互依赖"></a>3. 避免测试出现相互依赖</h3><p>比如不能共享一个类的实例，不能有参数传递。总之就是各干各的，不要共用一个东西。</p>
+<h3 id="4-Keep-It-Short-Sweet-and-Visible"><a href="#4-Keep-It-Short-Sweet-and-Visible" class="headerlink" title="4. Keep It Short, Sweet, and Visible"></a>4. Keep It Short, Sweet, and Visible</h3><p>保持简单，可以让你在查问题的时候一眼看到重点，而不是在一堆混乱的逻辑里挣扎。</p>
+<h3 id="5-Recognize-Test-Setup-as-a-Smell"><a href="#5-Recognize-Test-Setup-as-a-Smell" class="headerlink" title="5. Recognize Test Setup as a Smell"></a>5. Recognize Test Setup as a Smell</h3><p>当你在arrange阶段发现一切都很难设置好，好复杂的时候，你就应该停下来重新思考你的代码设计，不然这样的测试也是不可靠的，迟早会出问题。</p>
+<h3 id="6-把单元测试加入到Build的内容里"><a href="#6-把单元测试加入到Build的内容里" class="headerlink" title="6. 把单元测试加入到Build的内容里"></a>6. 把单元测试加入到Build的内容里</h3><p>如果build的时候单元测试出错了，那就应该立即停下并检查代码，这样能保证团队协作的质量。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原文地址"><span class="toc-number">1.</span> <span class="toc-text">原文地址</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单元测试概念"><span class="toc-number">2.</span> <span class="toc-text">单元测试概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#哪些不算单元测试"><span class="toc-number">2.1.</span> <span class="toc-text">哪些不算单元测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是单元测试"><span class="toc-number">2.2.</span> <span class="toc-text">什么是单元测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单元测试最佳实践"><span class="toc-number">3.</span> <span class="toc-text">单元测试最佳实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Arrange-Act-Assert"><span class="toc-number">3.1.</span> <span class="toc-text">1. Arrange, Act, Assert</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Arrage"><span class="toc-number">3.1.1.</span> <span class="toc-text">Arrage</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Act"><span class="toc-number">3.1.2.</span> <span class="toc-text">Act</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Assert"><span class="toc-number">3.1.3.</span> <span class="toc-text">Assert</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-一个测试方法只能有一个断言"><span class="toc-number">3.2.</span> <span class="toc-text">2. 一个测试方法只能有一个断言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-避免测试出现相互依赖"><span class="toc-number">3.3.</span> <span class="toc-text">3. 避免测试出现相互依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Keep-It-Short-Sweet-and-Visible"><span class="toc-number">3.4.</span> <span class="toc-text">4. Keep It Short, Sweet, and Visible</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Recognize-Test-Setup-as-a-Smell"><span class="toc-number">3.5.</span> <span class="toc-text">5. Recognize Test Setup as a Smell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-把单元测试加入到Build的内容里"><span class="toc-number">3.6.</span> <span class="toc-text">6. 把单元测试加入到Build的内容里</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/UnitTesting.html";
+  var disqus_url = "http://wild2pro.com/UnitTesting.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
