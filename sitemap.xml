@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://wild2pro.com/MongoDBSchemaDesign.html</loc>
+    
+    <lastmod>2019-05-05T12:39:10.252Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://wild2pro.com/UnitTesting.html</loc>
     
     <lastmod>2019-05-04T12:45:25.748Z</lastmod>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>MongoDB Schema Design &amp; Indexes | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>MongoDB Schema Design &amp; Indexes</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月05日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MongoDB/">MongoDB</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#MongoDB" class="tag">MongoDB</a>
+
+
+            
+          </div>
+          <h3 id="Avoid-large-document"><a href="#Avoid-large-document" class="headerlink" title="Avoid large document"></a>Avoid large document</h3><p>MongoDB里document的大小上限是16MB。但是实际情况下，大部分文档都没有这么大。如果要存储多媒体数据，则应该是用GridFS。</p>
+<h3 id="Avoid-unnecessarily-long-field-names"><a href="#Avoid-unnecessarily-long-field-names" class="headerlink" title="Avoid unnecessarily long field names"></a>Avoid unnecessarily long field names</h3><p>字段名在没一个文档中都会重复出现，并且是会占用存储空间的。所以小的字段名可以节省空间，特别是对于节省RAM的空间特别有用。</p>
+<h3 id="Use-caution-when-considering-indexes-on-low-cardinality-fields"><a href="#Use-caution-when-considering-indexes-on-low-cardinality-fields" class="headerlink" title="Use caution when considering indexes on low-cardinality fields"></a>Use caution when considering indexes on low-cardinality fields</h3><p>设置索引的字段值要足够离散，如果离散度低的话，实际上会返回很大的一个结果集。复合索引可以包含离散度低的字段，但是它们组合起来建立的索引必须是高度离散的。</p>
+<h3 id="Eliminate-unnecessary-indexes"><a href="#Eliminate-unnecessary-indexes" class="headerlink" title="Eliminate unnecessary indexes"></a>Eliminate unnecessary indexes</h3><p>索引是很消耗资源的，占用RAM，在document的字段值更新时，索引也会造成额外的硬盘I/O，所以，干掉不必要的索引。</p>
+<h3 id="Remove-indexes-that-are-prefixes-of-other-indexes"><a href="#Remove-indexes-that-are-prefixes-of-other-indexes" class="headerlink" title="Remove indexes that are prefixes of other indexes"></a>Remove indexes that are prefixes of other indexes</h3><p>如果某一个字段的索引已经是其他索引的前缀字段了，那么单独的这个索引就是没有必要的。比如，复合索引 last_name, first name，这个索引在查询last_name的时候同样有效。</p>
+<h3 id="Use-a-compound-index-rather-than-index-intersection"><a href="#Use-a-compound-index-rather-than-index-intersection" class="headerlink" title="Use  a compound index rather than index intersection"></a>Use  a compound index rather than index intersection</h3><p>在根据多个字段查询的时候，复合索引是一个更优的选择</p>
+<h3 id="Use-partial-index"><a href="#Use-partial-index" class="headerlink" title="Use partial index"></a>Use partial index</h3><p>使用不完全索引，可以减少空间的消耗和索引创建和维护时的性能消耗。</p>
+<h3 id="Avoid-regular-expressions-that-are-not-left-anchored-or-rooted"><a href="#Avoid-regular-expressions-that-are-not-left-anchored-or-rooted" class="headerlink" title="Avoid regular expressions that are not left anchored or rooted"></a>Avoid regular expressions that are not left anchored or rooted</h3><p>查询条件如果以通配符开头的话是非常低效的。</p>
+<h3 id="Use-index-optimizations-available-in-WiredTiger-storage-engine"><a href="#Use-index-optimizations-available-in-WiredTiger-storage-engine" class="headerlink" title="Use index optimizations available in WiredTiger storage engine"></a>Use index optimizations available in WiredTiger storage engine</h3><p>WiredTiger引擎下会自动压缩索引。</p>
+<h3 id="Understand-any-existing-document-schema-MongoDB-Compass"><a href="#Understand-any-existing-document-schema-MongoDB-Compass" class="headerlink" title="Understand any existing document schema - MongoDB Compass"></a>Understand any existing document schema - MongoDB Compass</h3><p>MongoDB Compass 是个好工具，可以熟悉一下它的使用。</p>
+<h3 id="Identify-amp-remove-obsolete-indexes"><a href="#Identify-amp-remove-obsolete-indexes" class="headerlink" title="Identify &amp; remove obsolete indexes"></a>Identify &amp; remove obsolete indexes</h3><p>即使辨别并移除废弃的索引</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Avoid-large-document"><span class="toc-number">1.</span> <span class="toc-text">Avoid large document</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Avoid-unnecessarily-long-field-names"><span class="toc-number">2.</span> <span class="toc-text">Avoid unnecessarily long field names</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Use-caution-when-considering-indexes-on-low-cardinality-fields"><span class="toc-number">3.</span> <span class="toc-text">Use caution when considering indexes on low-cardinality fields</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Eliminate-unnecessary-indexes"><span class="toc-number">4.</span> <span class="toc-text">Eliminate unnecessary indexes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Remove-indexes-that-are-prefixes-of-other-indexes"><span class="toc-number">5.</span> <span class="toc-text">Remove indexes that are prefixes of other indexes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Use-a-compound-index-rather-than-index-intersection"><span class="toc-number">6.</span> <span class="toc-text">Use  a compound index rather than index intersection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Use-partial-index"><span class="toc-number">7.</span> <span class="toc-text">Use partial index</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Avoid-regular-expressions-that-are-not-left-anchored-or-rooted"><span class="toc-number">8.</span> <span class="toc-text">Avoid regular expressions that are not left anchored or rooted</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Use-index-optimizations-available-in-WiredTiger-storage-engine"><span class="toc-number">9.</span> <span class="toc-text">Use index optimizations available in WiredTiger storage engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Understand-any-existing-document-schema-MongoDB-Compass"><span class="toc-number">10.</span> <span class="toc-text">Understand any existing document schema - MongoDB Compass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Identify-amp-remove-obsolete-indexes"><span class="toc-number">11.</span> <span class="toc-text">Identify &amp; remove obsolete indexes</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/MongoDBSchemaDesign.html";
+  var disqus_url = "http://wild2pro.com/MongoDBSchemaDesign.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
