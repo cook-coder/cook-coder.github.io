@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>正确设置你的Http Header，让应用更安全 | 写程序的厨子</title>
+  <meta name="keywords" content="HTTP Security Headers | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="简要说明6个HTTP Security Headers | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>正确设置你的Http Header，让应用更安全</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月09日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日常采坑/">日常采坑</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#HTTP" class="tag">HTTP</a>
+
+
+            
+          </div>
+          <blockquote>
+<p>原文地址:<br><a href="https://www.keycdn.com/blog/http-security-headers" target="_blank" rel="noopener">https://www.keycdn.com/blog/http-security-headers</a></p>
+</blockquote>
+<h2 id="6个HTTP安全头"><a href="#6个HTTP安全头" class="headerlink" title="6个HTTP安全头"></a>6个HTTP安全头</h2><h3 id="1-Content-Security-Policy"><a href="#1-Content-Security-Policy" class="headerlink" title="1. Content Security Policy"></a>1. Content Security Policy</h3><p>content-security-policy：可以用来防止不受信任的静态资源带来的XSS攻击。响应头的格式如下：<br><code>content-security-policy: script-src &#39;self&#39; https://www.google-analytics.com</code><br>具体配置可以参考nginx或者apache的文档。</p>
+<h3 id="2-X-XSS-Protection"><a href="#2-X-XSS-Protection" class="headerlink" title="2. X-XSS-Protection"></a>2. X-XSS-Protection</h3><p>x-xss-protection：用来强制浏览器启用内置的XSS过滤功能，虽然浏览器默认是过滤的，但是这个这个响应头可以强制浏览器执行。浏览器兼容性：IE8+，Chrome，Safari。<br><code>x-xss-protection: 1; mode=block</code></p>
+<h4 id="Enable-in-Nginx"><a href="#Enable-in-Nginx" class="headerlink" title="Enable in Nginx"></a>Enable in Nginx</h4><p><code>add_header x-xss-protection &quot;1; mode=block&quot; always;</code></p>
+<h4 id="Enable-in-Apache"><a href="#Enable-in-Apache" class="headerlink" title="Enable in Apache"></a>Enable in Apache</h4><p><code>header always set x-xss-protection &quot;1; mode=block&quot;</code></p>
+<h3 id="3-HTTP-Strict-Transport-Security-HSTS"><a href="#3-HTTP-Strict-Transport-Security-HSTS" class="headerlink" title="3. HTTP Strict Transport Security(HSTS)"></a>3. HTTP Strict Transport Security(HSTS)</h3><p>strict-transport-security: 强制浏览器使用HTTPS与服务端通信，不接受不安全的HTTP连接。这里给一个响应头的样例，具体配置请阅读相关文档。<br><code>strict-transport-security: max-age=31536000; includeSubDomains; preload</code></p>
+<h3 id="4-X-Frame-Options"><a href="#4-X-Frame-Options" class="headerlink" title="4. X-Frame-Options"></a>4. X-Frame-Options</h3><p>x-frame-options: 是用来防止点击劫持的。响应头样例：<br><code>x-frame-options: SAMEORIGIN</code></p>
+<h4 id="Enable-in-Nginx-1"><a href="#Enable-in-Nginx-1" class="headerlink" title="Enable in Nginx"></a>Enable in Nginx</h4><p><code>add_header x-frame-options &quot;SAMEORIGIN&quot; always;</code></p>
+<h4 id="Enable-in-Apache-1"><a href="#Enable-in-Apache-1" class="headerlink" title="Enable in Apache"></a>Enable in Apache</h4><p><code>header always set x-frame-options &quot;SAMEORIGIN&quot;</code></p>
+<h3 id="5-Public-Key-Pins"><a href="#5-Public-Key-Pins" class="headerlink" title="5. Public-Key-Pins"></a>5. Public-Key-Pins</h3><p>public-key-pins： 用来防止通过伪造证书进行中间人攻击。<br>设置方法：<a href="https://scotthelme.co.uk/hpkp-http-public-key-pinning/" target="_blank" rel="noopener">https://scotthelme.co.uk/hpkp-http-public-key-pinning/</a></p>
+<p>响应头样例：<br><code>public-key-pins: pin-sha256=&quot;t/OMbKSZLWdYUDmhOyUzS+ptUbrdVgb6Tv2R+EMLxJM=&quot;; pin-sha256=&quot;PvQGL6PvKOp6Nk3Y9B7npcpeL40twdPwZ4kA2IiixqA=&quot;; pin-sha256=&quot;ZyZ2XrPkTuoiLk/BR5FseiIV/diN3eWnSewbAIUMcn8=&quot;; pin-sha256=&quot;0kDINA/6eVxlkns5z2zWv2/vHhxGne/W0Sau/ypt3HY=&quot;; pin-sha256=&quot;ktYQT9vxVN4834AQmuFcGlSysT1ZJAxg+8N1NkNG/N8=&quot;; pin-sha256=&quot;rwsQi0+82AErp+MzGE7UliKxbmJ54lR/oPheQFZURy8=&quot;; max-age=600; report-uri=&quot;https://www.keycdn.com&quot;</code></p>
+<h3 id="6-X-Content-Type-Options"><a href="#6-X-Content-Type-Options" class="headerlink" title="6. X-Content-Type-Options"></a>6. X-Content-Type-Options</h3><p>x-content-type： 防止IE和Chrome去嗅探响应内容的格式。</p>
+<p>响应头样例：<br><code>x-content-type: nosniff</code></p>
+<h4 id="Enable-in-Nginx-2"><a href="#Enable-in-Nginx-2" class="headerlink" title="Enable in Nginx"></a>Enable in Nginx</h4><p><code>add_header X-Content-Type-Options &quot;nosniff&quot; always;</code></p>
+<h4 id="Enable-in-Apache-2"><a href="#Enable-in-Apache-2" class="headerlink" title="Enable in Apache"></a>Enable in Apache</h4><p><code>Header always set X-Content-Type-Options &quot;nosniff&quot;</code></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#6个HTTP安全头"><span class="toc-number">1.</span> <span class="toc-text">6个HTTP安全头</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Content-Security-Policy"><span class="toc-number">1.1.</span> <span class="toc-text">1. Content Security Policy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-X-XSS-Protection"><span class="toc-number">1.2.</span> <span class="toc-text">2. X-XSS-Protection</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Enable-in-Nginx"><span class="toc-number">1.2.1.</span> <span class="toc-text">Enable in Nginx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Enable-in-Apache"><span class="toc-number">1.2.2.</span> <span class="toc-text">Enable in Apache</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-HTTP-Strict-Transport-Security-HSTS"><span class="toc-number">1.3.</span> <span class="toc-text">3. HTTP Strict Transport Security(HSTS)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-X-Frame-Options"><span class="toc-number">1.4.</span> <span class="toc-text">4. X-Frame-Options</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Enable-in-Nginx-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">Enable in Nginx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Enable-in-Apache-1"><span class="toc-number">1.4.2.</span> <span class="toc-text">Enable in Apache</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Public-Key-Pins"><span class="toc-number">1.5.</span> <span class="toc-text">5. Public-Key-Pins</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-X-Content-Type-Options"><span class="toc-number">1.6.</span> <span class="toc-text">6. X-Content-Type-Options</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Enable-in-Nginx-2"><span class="toc-number">1.6.1.</span> <span class="toc-text">Enable in Nginx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Enable-in-Apache-2"><span class="toc-number">1.6.2.</span> <span class="toc-text">Enable in Apache</span></a></li></ol></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/HardeningYourHttpSecurityHeaders.html";
+  var disqus_url = "http://wild2pro.com/HardeningYourHttpSecurityHeaders.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
