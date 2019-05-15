@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>怎样提升MongoDB里正则查询的效率 | 写程序的厨子</title>
+  <meta name="keywords" content="MongoDB查询效率提升 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="提升MongoDB正则查询效率的方法 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>怎样提升MongoDB里正则查询的效率</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月15日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MongoDB/">MongoDB</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Regex Query" class="tag">Regex Query</a>
+
+
+            
+          </div>
+          <p>NoSQL数据库中我们很容易的可以创建一些包含数组的元素，比如一个存电影信息的数据结构可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    title: &apos;Matrix&apos;,</span><br><span class="line">    cast: [&apos;Keanu Reeves&apos;, &apos;Carrie-Anne Moss&apos;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们要查Carrie-Anne Moss演的电影就可以这么写查询<code>db.movies.find({cast:&#39;Carrie-Anne Moss&#39;})</code>来获取匹配的文档。</p>
+<h3 id="Using-A-Regex-for-non-exact-search-queries"><a href="#Using-A-Regex-for-non-exact-search-queries" class="headerlink" title="Using A Regex for non-exact search queries"></a>Using A Regex for non-exact search queries</h3><p>但不幸的是，这种理想的搜索方式在现实中只占了一小部分，而且我们需要为用户的“任性的”搜索方式做兼容。<br>用户可能会输入Carrie Moss或者moss carries-anne，这时候精确搜索就会查不到结果。<br>此时，我们需要用到MongoDB的正则查询方式，可以写成如下的查询：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.movies.find(&#123;</span><br><span class="line">    cast: &#123; $elemMatch: &#123;$regex: /Moss/i, $regex: /Carrie-Anne/i&#125;&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这样便可以查询到想要的结果了，但是也会有一些搜索意图之外的记录，比如Sandra Moss和Carrie-Anne Fisher。这样的查询方式最大的问题是，随着我们数据的增加，会有严重的效率问题：<br>× 占用大量的CPU时间<br>× 查询会变得非常的慢</p>
+<h3 id="为什么加索引不能解决这个问题"><a href="#为什么加索引不能解决这个问题" class="headerlink" title="为什么加索引不能解决这个问题"></a>为什么加索引不能解决这个问题</h3><p>不管什么数据库，再优化性能时，首先要考虑的就是加索引。但是由于我们的查询需要忽略大小写，所以就算我们而外创建一个纯小写的数组也无法从根本上解决问题，用户输入始终是不可控的，比如Carrie-Anne Moss和Moss Carrie Anne，我们无法确定以开头的字符串，也就无法利用建好的索引。</p>
+<h3 id="全文索引可以救我们"><a href="#全文索引可以救我们" class="headerlink" title="全文索引可以救我们"></a>全文索引可以救我们</h3><p>创建全文索引：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.movies.createIndex( &#123; cast: &quot;text&quot; &#125; );</span><br></pre></td></tr></table></figure></p>
+<p>查询结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.movies.find( &#123; $text: &#123; $search: &quot;Moss Carrie-Anne&quot; &#125; &#125; );</span><br></pre></td></tr></table></figure></p>
+<p>虽然全文索引非常的快和高效，但是仍然会有一些问题：<br>× 如果你用多个字段建立了一个全文索引，那么查询的时候是无法用字段区分它们的。<br>× 查询的结果会很宽泛。</p>
+<h3 id="把全文搜索和正则搜索结合起来"><a href="#把全文搜索和正则搜索结合起来" class="headerlink" title="把全文搜索和正则搜索结合起来"></a>把全文搜索和正则搜索结合起来</h3><p>我们都知道这样的表达式<code>if(someFunc()&amp;&amp;someOtherFunc()){}</code>如果someFunc()返回的是false，那么someOtherFunc()是不会被执行的。这个逻辑在MongoDB中也是成立的。<br>所以我们可以用这样的组合查询：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.movies.find(&#123;</span><br><span class="line">$and:[&#123;</span><br><span class="line">    $text: &#123;</span><br><span class="line">        $search: &quot;Moss Carrie-Anne&quot;</span><br><span class="line">    &#125;&#125;,&#123;</span><br><span class="line">    cast: &#123;</span><br><span class="line">        $elemMatch: &#123;$regex: /Moss/, $regex: /Carrie-Anne/&#125;&#125;</span><br><span class="line">    &#125;]&#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<p>这样在数据量大的数据库中，效率提升尤为明显。这样的思路不仅仅可以用在MongoDB，其他数据库也可以尝试使用。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-A-Regex-for-non-exact-search-queries"><span class="toc-number">1.</span> <span class="toc-text">Using A Regex for non-exact search queries</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么加索引不能解决这个问题"><span class="toc-number">2.</span> <span class="toc-text">为什么加索引不能解决这个问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全文索引可以救我们"><span class="toc-number">3.</span> <span class="toc-text">全文索引可以救我们</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#把全文搜索和正则搜索结合起来"><span class="toc-number">4.</span> <span class="toc-text">把全文搜索和正则搜索结合起来</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/HowToSpeedUpRegexQueries.html";
+  var disqus_url = "http://wild2pro.com/HowToSpeedUpRegexQueries.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

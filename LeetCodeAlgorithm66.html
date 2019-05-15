@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>LeetCode算法题66解题思路 | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>LeetCode算法题66解题思路</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月14日</time>
+            
+            
+          </div>
+          <h2 id="原题"><a href="#原题" class="headerlink" title="原题"></a>原题</h2><h3 id="66-Plus-One"><a href="#66-Plus-One" class="headerlink" title="66. Plus One"></a>66. Plus One</h3><p>Given a non-empty array of digits representing a non-negative integer, plus one to the integer.</p>
+<p>The digits are stored such that the most significant digit is at the head of the list, and each element in the array contain a single digit.</p>
+<p>You may assume the integer does not contain any leading zero, except the number 0 itself.</p>
+<h4 id="Example-1"><a href="#Example-1" class="headerlink" title="Example 1:"></a>Example 1:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: [1,2,3]</span><br><span class="line">Output: [1,2,4]</span><br><span class="line">Explanation: The array represents the integer 123.</span><br></pre></td></tr></table></figure>
+<h4 id="Example-2"><a href="#Example-2" class="headerlink" title="Example 2:"></a>Example 2:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: [4,3,2,1]</span><br><span class="line">Output: [4,3,2,2]</span><br><span class="line">Explanation: The array represents the integer 4321.</span><br></pre></td></tr></table></figure>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><ol>
+<li>要考虑到不需要遍历所有元素，因为当没有进位的时候+1这个行为就结束了；</li>
+<li>要考虑如何处理进位的问题，+1的位置如果产生了进位，那么下一位就要+1，当前位要设为零；</li>
+<li>要考虑到数组的第0个元素也进位了的情况。</li>
+</ol>
+<p>把上面三点都照顾到的话，基本就没有问题了。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="Golang实现"><a href="#Golang实现" class="headerlink" title="Golang实现"></a>Golang实现</h3><p><a href="https://github.com/cook-coder/my-leetcode-solution/tree/master/easy/66" target="_blank" rel="noopener">https://github.com/cook-coder/my-leetcode-solution/tree/master/easy/66</a></p>
+<h2 id="成绩"><a href="#成绩" class="headerlink" title="成绩"></a>成绩</h2><p><img src="/img/blogs/leetcode/66.JPG" alt=""></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原题"><span class="toc-number">1.</span> <span class="toc-text">原题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#66-Plus-One"><span class="toc-number">1.1.</span> <span class="toc-text">66. Plus One</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Example-1"><span class="toc-number">1.1.1.</span> <span class="toc-text">Example 1:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Example-2"><span class="toc-number">1.1.2.</span> <span class="toc-text">Example 2:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解题思路"><span class="toc-number">2.</span> <span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现"><span class="toc-number">3.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Golang实现"><span class="toc-number">3.1.</span> <span class="toc-text">Golang实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#成绩"><span class="toc-number">4.</span> <span class="toc-text">成绩</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/LeetCodeAlgorithm66.html";
+  var disqus_url = "http://wild2pro.com/LeetCodeAlgorithm66.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
