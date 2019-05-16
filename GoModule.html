@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>快速入门Go Module | 写程序的厨子</title>
+  <meta name="keywords" content="Go Module,go mod | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="简单易懂的Go Module入门教程 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>快速入门Go Module</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月16日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Golang/">Golang</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Go Module" class="tag">Go Module</a>
+
+
+            
+          </div>
+          <h2 id="什么是Go-Modules"><a href="#什么是Go-Modules" class="headerlink" title="什么是Go Modules"></a>什么是Go Modules</h2><p>标准的解释官网都有，其实可以理解为它就是一个官方新出的依赖管理工具。</p>
+<h2 id="Go-Modules的使用"><a href="#Go-Modules的使用" class="headerlink" title="Go Modules的使用"></a>Go Modules的使用</h2><blockquote>
+<p>注意，使用go mod的前提是你的golang版本要&gt;=1.11</p>
+</blockquote>
+<p>首先，我们看下帮助文档，这里基本说明了Go Modules是干啥的，怎么用：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ go help mod</span><br><span class="line">Go mod provides access to operations on modules.</span><br><span class="line"></span><br><span class="line">Note that support for modules is built into all the go commands,</span><br><span class="line">not just 'go mod'. For example, day-to-day adding, removing, upgrading,</span><br><span class="line">and downgrading of dependencies should be done using 'go get'.</span><br><span class="line">See 'go help modules' for an overview of module functionality.</span><br><span class="line"></span><br><span class="line">Usage:</span><br><span class="line"></span><br><span class="line">        go mod &lt;command&gt; [arguments]</span><br><span class="line"></span><br><span class="line">The commands are:</span><br><span class="line"></span><br><span class="line">        download    download modules to local cache</span><br><span class="line">        edit        edit go.mod from tools or scripts</span><br><span class="line">        graph       print module requirement graph</span><br><span class="line">        init        initialize new module in current directory</span><br><span class="line">        tidy        add missing and remove unused modules</span><br><span class="line">        vendor      make vendored copy of dependencies</span><br><span class="line">        verify      verify dependencies have expected content</span><br><span class="line">        why         explain why packages or modules are needed</span><br><span class="line"></span><br><span class="line">Use "go help mod &lt;command&gt;" for more information about a command.</span><br></pre></td></tr></table></figure></p>
+<p>接下来我们就来说说如何用go mod命令创建一个新项目</p>
+<h3 id="1-初始化"><a href="#1-初始化" class="headerlink" title="1.初始化"></a>1.初始化</h3><blockquote>
+<p>请先确保设置好环境变量： export GO111MODULE=on</p>
+</blockquote>
+<p>go mod的价值就在于它让我们完全脱离了GOPATH这个概念，所以你可以在任何目录下创建项目<br>执行<code>go mod init your_project_name</code>，此时会在当前文件夹下创建一个go.mod文件，就表示初始化成功了。<br>比如：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  mkdir test</span><br><span class="line">➜  cd test</span><br><span class="line">➜  go mod init test</span><br><span class="line">go: creating new go.mod: module test</span><br><span class="line">➜  cat go.mod</span><br><span class="line">module test</span><br><span class="line"></span><br><span class="line">go 1.12</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是：</p>
+<ol>
+<li>go mod init 后面还有一个参数是你取的module的名字，可以是项目名或者任何合适的名字就行。不加这个参数你有可能会遇到错误。</li>
+<li>可以看到初始化后的go.mod文件只有三行，一个module的申明，一个空行，一个go版本。空行的位置就是用来添加依赖的位置了。</li>
+</ol>
+<h3 id="2-添加并下载依赖"><a href="#2-添加并下载依赖" class="headerlink" title="2. 添加并下载依赖"></a>2. 添加并下载依赖</h3><h4 id="2-1-添加依赖"><a href="#2-1-添加依赖" class="headerlink" title="2.1 添加依赖"></a>2.1 添加依赖</h4><p>我们打开go.mod文件，加入我们需要的依赖。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">require (</span><br><span class="line">        github.com/elastic/go-elasticsearch/v6 6.x</span><br><span class="line">        github.com/go-redis/redis master</span><br><span class="line">        github.com/jinzhu/gorm v1.9.8</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>可以按照依赖的文档进行版本选择，比如es的这个库;<br>如果不限制版本，写master即可;<br>还可以查看对应库的release，把相应的版本号写上，如gorm。</p>
+<h4 id="2-2-下载依赖"><a href="#2-2-下载依赖" class="headerlink" title="2.2 下载依赖"></a>2.2 下载依赖</h4><p>接下来下载依赖即可<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  go mod download</span><br></pre></td></tr></table></figure></p>
+<p>依赖的保存位置和go get下载的不同，go mod下载的依赖是放在$GOPATH/pkg/mod下面。<br>下载完成后，就可以进行项目开发了。</p>
+<h4 id="额外说明"><a href="#额外说明" class="headerlink" title="额外说明"></a>额外说明</h4><p>如果是你有一个老项目想改用go mod来管理依赖怎么办呢？<br>有一个命令叫go tidy, 他可以把缺失的依赖添加到go.mod文件，并移除go.mod文件中多余的依赖。</p>
+<h2 id="我入门时候踩过的坑"><a href="#我入门时候踩过的坑" class="headerlink" title="我入门时候踩过的坑"></a>我入门时候踩过的坑</h2><ol>
+<li>项目放在GOPATH目录下，可能会导致go.mod的依赖不生效，import的地方都是小红线。</li>
+<li>go mod init 忘记加项目名，看help文档实在没看出来后面还需要加一个参数。</li>
+<li>环境变量设置<code>export GO111MODULE=on</code></li>
+<li>别忘了最重要的，这一切都需要科学上网。</li>
+</ol>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是Go-Modules"><span class="toc-number">1.</span> <span class="toc-text">什么是Go Modules</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Go-Modules的使用"><span class="toc-number">2.</span> <span class="toc-text">Go Modules的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-初始化"><span class="toc-number">2.1.</span> <span class="toc-text">1.初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-添加并下载依赖"><span class="toc-number">2.2.</span> <span class="toc-text">2. 添加并下载依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-添加依赖"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.1 添加依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-下载依赖"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2 下载依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#额外说明"><span class="toc-number">2.2.3.</span> <span class="toc-text">额外说明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#我入门时候踩过的坑"><span class="toc-number">3.</span> <span class="toc-text">我入门时候踩过的坑</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/GoModule.html";
+  var disqus_url = "http://wild2pro.com/GoModule.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
