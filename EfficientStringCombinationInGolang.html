@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Golang中哪种字符串连接最高效 | 写程序的厨子</title>
+  <meta name="keywords" content="Golang字符串连接 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="分析那种字符串连接在Golang中最高效 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Golang中哪种字符串连接最高效</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月17日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Golang/">Golang</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#字符串连接" class="tag">字符串连接</a>
+
+
+            
+          </div>
+          <h1 id="Golang字符串连接"><a href="#Golang字符串连接" class="headerlink" title="Golang字符串连接"></a>Golang字符串连接</h1><p>字符串连接在用任何语言开发时都是一个最常用的操作，在Golang中也不例外，比如最常用的写日志场景。这个看似简单的操作，因为其操作的频繁性，如果忽略其性能问题的话也是对我们的程序有相当大的影响的。</p>
+<h2 id="字符串连接的性能测试代码"><a href="#字符串连接的性能测试代码" class="headerlink" title="字符串连接的性能测试代码"></a>字符串连接的性能测试代码</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concat_string</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"bytes"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">	<span class="string">"strings"</span></span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> numbers = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">BenchmarkSprintf</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	b.ResetTimer()</span><br><span class="line">	<span class="keyword">for</span> idx := <span class="number">0</span>; idx &lt; b.N; idx++ &#123;</span><br><span class="line">		<span class="keyword">var</span> s <span class="keyword">string</span></span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; numbers; i++ &#123;</span><br><span class="line">			s = fmt.Sprintf(<span class="string">"%v%v"</span>, s, i)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	b.StopTimer()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">BenchmarkStringBuilder</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	b.ResetTimer()</span><br><span class="line">	<span class="keyword">for</span> idx := <span class="number">0</span>; idx &lt; b.N; idx++ &#123;</span><br><span class="line">		<span class="keyword">var</span> builder strings.Builder</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; numbers; i++ &#123;</span><br><span class="line">			builder.WriteString(strconv.Itoa(i))</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		_ = builder.String()</span><br><span class="line">	&#125;</span><br><span class="line">	b.StopTimer()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">BenchmarkBytesBuf</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	b.ResetTimer()</span><br><span class="line">	<span class="keyword">for</span> idx := <span class="number">0</span>; idx &lt; b.N; idx++ &#123;</span><br><span class="line">		<span class="keyword">var</span> buf bytes.Buffer</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; numbers; i++ &#123;</span><br><span class="line">			buf.WriteString(strconv.Itoa(i))</span><br><span class="line">		&#125;</span><br><span class="line">		_ = buf.String()</span><br><span class="line">	&#125;</span><br><span class="line">	b.StopTimer()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">BenchmarkStringAdd</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	b.ResetTimer()</span><br><span class="line">	<span class="keyword">for</span> idx := <span class="number">0</span>; idx &lt; b.N; idx++ &#123;</span><br><span class="line">		<span class="keyword">var</span> s <span class="keyword">string</span></span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; numbers; i++ &#123;</span><br><span class="line">			s += strconv.Itoa(i)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	b.StopTimer()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="性能测试结果"><a href="#性能测试结果" class="headerlink" title="性能测试结果"></a>性能测试结果</h2><p><img src="/img/blogs/others/golang_str_concat.png" alt=""></p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>可以看到string.builder的性能最好，bytes.buffer次之，然后是+号连接，最差的就是Sprintf。</p>
+<p>所以面对字符串连接这样的高频操作，我们最好就是选择string.builder的方式连接字符串，当然这个要求你的Golang版本大于1.11，如果版本不满足的话也可以选择性能相差最小的bytes.buffer的方式。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Golang字符串连接"><span class="toc-number">1.</span> <span class="toc-text">Golang字符串连接</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#字符串连接的性能测试代码"><span class="toc-number">1.1.</span> <span class="toc-text">字符串连接的性能测试代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能测试结果"><span class="toc-number">1.2.</span> <span class="toc-text">性能测试结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结论"><span class="toc-number">1.3.</span> <span class="toc-text">结论</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/EfficientStringCombinationInGolang.html";
+  var disqus_url = "http://wild2pro.com/EfficientStringCombinationInGolang.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
