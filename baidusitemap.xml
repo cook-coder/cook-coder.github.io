@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://wild2pro.com/ServerSideCheckList.html</loc>
+    <lastmod>2019-05-22T14:42:15.427Z</lastmod>
+  </url>  <url>
     <loc>http://wild2pro.com/HowToDebugPHPInVSCodeWithXDebug.html</loc>
     <lastmod>2019-05-22T14:17:05.039Z</lastmod>
   </url>  <url>
@@ -21,9 +24,6 @@
   </url>  <url>
     <loc>http://wild2pro.com/HardeningYourHttpSecurityHeaders.html</loc>
     <lastmod>2019-05-22T14:15:24.231Z</lastmod>
-  </url>  <url>
-    <loc>http://wild2pro.com/ServerSideCheckList.html</loc>
-    <lastmod>2019-05-22T14:15:00.880Z</lastmod>
   </url>  <url>
     <loc>http://wild2pro.com/TwoSum.html</loc>
     <lastmod>2019-05-22T14:12:39.228Z</lastmod>
