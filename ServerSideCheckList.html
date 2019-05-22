@@ -105,7 +105,34 @@
 <li>可以在不影响用户会话的情况下加入节点</li>
 <li>可以滚动升级</li>
 </ol>
-<h3 id="监控（Supervising）"><a href="#监控（Supervising）" class="headerlink" title="监控（Supervising）"></a>监控（Supervising）</h3><h3 id="原文地址"><a href="#原文地址" class="headerlink" title="原文地址"></a>原文地址</h3><p><a href="https://github.com/mtdvio/going-to-production/blob/master/serverside-checklist.md" target="_blank" rel="noopener">https://github.com/mtdvio/going-to-production/blob/master/serverside-checklist.md</a></p>
+<h3 id="监督（Supervising）"><a href="#监督（Supervising）" class="headerlink" title="监督（Supervising）"></a>监督（Supervising）</h3><ol>
+<li><h3 id="日志（Logging）"><a href="#日志（Logging）" class="headerlink" title="日志（Logging）"></a>日志（Logging）</h3></li>
+</ol>
+<h3 id="（Monitoring）"><a href="#（Monitoring）" class="headerlink" title="（Monitoring）"></a>（Monitoring）</h3><h3 id="（Metrics）"><a href="#（Metrics）" class="headerlink" title="（Metrics）"></a>（Metrics）</h3><h3 id="高可用（High-Availability）"><a href="#高可用（High-Availability）" class="headerlink" title="高可用（High Availability）"></a>高可用（High Availability）</h3><ol>
+<li>部署在不同的独立的数据中心</li>
+</ol>
+<h3 id="测试（Testing）"><a href="#测试（Testing）" class="headerlink" title="测试（Testing）"></a>测试（Testing）</h3><ol>
+<li>进行过压力测试</li>
+<li>进行网络隔离测试(I have performed network partitioning tests for my application)</li>
+</ol>
+<h3 id="备份（Backuping）"><a href="#备份（Backuping）" class="headerlink" title="备份（Backuping）"></a>备份（Backuping）</h3><ol>
+<li>可以从备份中恢复所有数据</li>
+</ol>
+<h3 id="安全（Security）"><a href="#安全（Security）" class="headerlink" title="安全（Security）"></a>安全（Security）</h3><ol>
+<li>参考 OWASP Top 10 进行审计</li>
+<li>TSL加密（https）</li>
+<li><p>已经在响应头上加入了有关的安全设置</p>
+<ul>
+<li>X-Frame-Options</li>
+<li>X-Content-Type-Options</li>
+<li>Content-Security-Policy</li>
+<li>X-XSS-Protection</li>
+<li>trict-Transport-Security</li>
+<li>Public-Key-Pins</li>
+</ul>
+</li>
+</ol>
+<h3 id="原文地址"><a href="#原文地址" class="headerlink" title="原文地址"></a>原文地址</h3><p><a href="https://github.com/mtdvio/going-to-production/blob/master/serverside-checklist.md" target="_blank" rel="noopener">https://github.com/mtdvio/going-to-production/blob/master/serverside-checklist.md</a></p>
 
         </section>
     </article>
@@ -125,7 +152,7 @@
     <div class="toc-container">
         <h1>目录</h1>
         <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#检查清单"><span class="toc-number">1.</span> <span class="toc-text">检查清单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#合法性-Legal"><span class="toc-number">1.1.</span> <span class="toc-text">合法性(Legal)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弹性-Resiliency"><span class="toc-number">1.2.</span> <span class="toc-text">弹性(Resiliency)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#负载均衡（Load-Balancing）"><span class="toc-number">1.3.</span> <span class="toc-text">负载均衡（Load Balancing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#易部署（Transparent-Deployment）"><span class="toc-number">1.4.</span> <span class="toc-text">易部署（Transparent Deployment）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监控（Supervising）"><span class="toc-number">1.5.</span> <span class="toc-text">监控（Supervising）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原文地址"><span class="toc-number">1.6.</span> <span class="toc-text">原文地址</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#检查清单"><span class="toc-number">1.</span> <span class="toc-text">检查清单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#合法性-Legal"><span class="toc-number">1.1.</span> <span class="toc-text">合法性(Legal)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弹性-Resiliency"><span class="toc-number">1.2.</span> <span class="toc-text">弹性(Resiliency)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#负载均衡（Load-Balancing）"><span class="toc-number">1.3.</span> <span class="toc-text">负载均衡（Load Balancing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#易部署（Transparent-Deployment）"><span class="toc-number">1.4.</span> <span class="toc-text">易部署（Transparent Deployment）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监督（Supervising）"><span class="toc-number">1.5.</span> <span class="toc-text">监督（Supervising）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志（Logging）"><span class="toc-number">1.6.</span> <span class="toc-text">日志（Logging）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（Monitoring）"><span class="toc-number">1.7.</span> <span class="toc-text">（Monitoring）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（Metrics）"><span class="toc-number">1.8.</span> <span class="toc-text">（Metrics）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高可用（High-Availability）"><span class="toc-number">1.9.</span> <span class="toc-text">高可用（High Availability）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试（Testing）"><span class="toc-number">1.10.</span> <span class="toc-text">测试（Testing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#备份（Backuping）"><span class="toc-number">1.11.</span> <span class="toc-text">备份（Backuping）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安全（Security）"><span class="toc-number">1.12.</span> <span class="toc-text">安全（Security）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原文地址"><span class="toc-number">1.13.</span> <span class="toc-text">原文地址</span></a></li></ol></li></ol>
         </div>
     </div>
     
