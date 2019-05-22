@@ -17,9 +17,9 @@
   <link rel="icon" href="/favicon.ico">
   
     
-  <title>No module named yum错误修复 | 写程序的厨子</title>
-  <meta name="keywords" content="yum broken | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
-  <meta name="description" content="How to fix yum. | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <title>ServerSideCheckList | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -65,9 +65,9 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>No module named yum错误修复</h1>
+          <h1>ServerSideCheckList</h1>
           <div class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年03月20日</time>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月22日</time>
             
               | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
   <div class="article-category">
@@ -82,24 +82,12 @@
                   <i class="fa fa-tag" aria-hidden="true"></i>
                 
                
-  <a href="/tags/#yum" class="tag">yum</a>
+  <a href="/tags/#server" class="tag">server</a>
 
 
             
           </div>
-          <p>这周再测试环境准备用yum安装个软件的时候发现它居然报错了：No module named yum，因为之前自己折腾过centos上的python环境，所以第一反应就是python环境被人动过。</p>
-<p>接着往下看错误信息：</p>
-<blockquote>
-<p>Please install a package which provides this module, or verify that the module is installed correctly.</p>
-<p>It’s possible that above module doesn’t match the current version of python, which is: ……</p>
-</blockquote>
-<p>错误信息说要么是yum没有安装，要么就是安装的姿势不对，这两种都不可能，因为用的阿里云嘛，默认肯定是好的。那基本可以从它的下一句话里找问题了：很有可能是现在的python版本和原有的yum关联的python版本不一致导致的。</p>
-<p>于是把问题反应改了运维小哥，毕竟环境问题还是不要自己随便动。（其实我们已经不规范了，环境估计就是之前被人弄出问题了。）</p>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p><code>whereis python</code><br>查看当前机器有哪些版本的python：<br>除了当前(2.7)的/usr/bin/python， 外还有一个/usr/bin/python2.6</p>
-<p>接着打开yum文件<br><code>vim /usr/bin/yum</code><br>编辑第一行:<code>#!/usr/bin/python</code>改成<code>#!/usr/bin/python2.6</code>，保存退出。</p>
-<p>再次执行yum命令，发现已经完全正常了。</p>
-<h2 id="小结一下"><a href="#小结一下" class="headerlink" title="小结一下"></a>小结一下</h2><p>centos上需要改动python版本的时候，一定要注意先记录原始的版本，并保留原始版本，即时修改yum配置，以免给后来人造成麻烦。</p>
-
+          
         </section>
     </article>
     
@@ -115,13 +103,6 @@
   </div>
   <aside>
     
-    <div class="toc-container">
-        <h1>目录</h1>
-        <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#解决方法"><span class="toc-number">1.</span> <span class="toc-text">解决方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结一下"><span class="toc-number">2.</span> <span class="toc-text">小结一下</span></a></li></ol>
-        </div>
-    </div>
-    
   </aside>
 </main>
 
@@ -129,8 +110,8 @@
 <script type="text/javascript">
   /* * * CONFIGURATION VARIABLES * * */
   var disqus_shortname = "wild2pro";
-  var disqus_identifier = "http://wild2pro.com/HowToFixYum.html";
-  var disqus_url = "http://wild2pro.com/HowToFixYum.html";
+  var disqus_identifier = "http://wild2pro.com/ServerSideCheckList.html";
+  var disqus_url = "http://wild2pro.com/ServerSideCheckList.html";
 
   isAgent(getDisqus)
 
