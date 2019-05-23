@@ -89,33 +89,69 @@
           </div>
           <p>平时我们都专注开发，运维小哥负责上线，很少会去思考一个问题：上线的应用应该达到什么标准？</p>
 <p>今天就来了解下这个内容：</p>
-<h2 id="检查清单"><a href="#检查清单" class="headerlink" title="检查清单"></a>检查清单</h2><h3 id="合法性-Legal"><a href="#合法性-Legal" class="headerlink" title="合法性(Legal)"></a>合法性(Legal)</h3><ol>
+<h2 id="检查清单"><a href="#检查清单" class="headerlink" title="检查清单"></a>检查清单</h2><h3 id="合法性-Legal"><a href="#合法性-Legal" class="headerlink" title="合法性(Legal)"></a>合法性(Legal)</h3><ul>
 <li>确保自己的应用没有违反第三方的证书许可</li>
 <li>My application does not violate cryptography policies and laws</li>
 <li>我的应用遵循组织的标准<blockquote>
 <p>第二条不太能看懂想表达什么，先记录一下。符合密码学的政策和规则？看起来怪怪的。</p>
 </blockquote>
 </li>
-</ol>
-<h3 id="弹性-Resiliency"><a href="#弹性-Resiliency" class="headerlink" title="弹性(Resiliency)"></a>弹性(Resiliency)</h3><h3 id="负载均衡（Load-Balancing）"><a href="#负载均衡（Load-Balancing）" class="headerlink" title="负载均衡（Load Balancing）"></a>负载均衡（Load Balancing）</h3><h3 id="易部署（Transparent-Deployment）"><a href="#易部署（Transparent-Deployment）" class="headerlink" title="易部署（Transparent Deployment）"></a>易部署（Transparent Deployment）</h3><ol>
+</ul>
+<h3 id="弹性-Resiliency"><a href="#弹性-Resiliency" class="headerlink" title="弹性(Resiliency)"></a>弹性(Resiliency)</h3><ul>
+<li>应用保持合理的功能隔离</li>
+<li>高负载下应用可以恢复</li>
+<li>应用可以自动重新建立丢失的连接</li>
+<li>应用不会导致级联故障，是整个系统崩溃</li>
+</ul>
+<h3 id="负载均衡（Load-Balancing）"><a href="#负载均衡（Load-Balancing）" class="headerlink" title="负载均衡（Load Balancing）"></a>负载均衡（Load Balancing）</h3><ul>
+<li>项目可以使用多核CPU</li>
+<li>项目可以跑在负载均衡背后</li>
+<li>可以不停机添加节点</li>
+</ul>
+<h3 id="易部署（Transparent-Deployment）"><a href="#易部署（Transparent-Deployment）" class="headerlink" title="易部署（Transparent Deployment）"></a>易部署（Transparent Deployment）</h3><ul>
 <li>可以在不停机的情况下加入节点</li>
 <li>可以在不影响用户会话的情况下加入节点</li>
 <li>可以滚动升级</li>
+</ul>
+<h3 id="监督（Supervising）"><a href="#监督（Supervising）" class="headerlink" title="监督（Supervising）"></a>监督（Supervising）</h3><ul>
+<li>系统重启后应用依旧可以存活</li>
+<li>应用在崩溃后可以立即重启</li>
+</ul>
+<h3 id="日志（Logging）"><a href="#日志（Logging）" class="headerlink" title="日志（Logging）"></a>日志（Logging）</h3><ul>
+<li>应用记录了所有的错误日志（包括被“吞掉”的错误）</li>
+<li>应用把不同的级别的日志独立保存，不同日期的也独立保存</li>
+<li>日志聚合到日志分析服务</li>
+</ul>
+<h3 id="监控（Monitoring）"><a href="#监控（Monitoring）" class="headerlink" title="监控（Monitoring）"></a>监控（Monitoring）</h3><ul>
+<li>配置了异常活动的报警<ul>
+<li>应用重启事件</li>
+<li>错误率下限触达报警</li>
+<li>系统资源濒临耗尽（CPU,Memory,IO &gt; 90%）</li>
+<li>HTTP请求超时</li>
+<li>HTTP响应码500</li>
+</ul>
+</li>
+<li>对系统各部分进行健康检查</li>
+</ul>
+<h3 id="可度量（Metrics）"><a href="#可度量（Metrics）" class="headerlink" title="可度量（Metrics）"></a>可度量（Metrics）</h3><ol>
+<li>可以监测到应用的不同数据<ul>
+<li>请求量</li>
+<li>请求频率</li>
+<li>业务逻辑响应时长</li>
+</ul>
+</li>
 </ol>
-<h3 id="监督（Supervising）"><a href="#监督（Supervising）" class="headerlink" title="监督（Supervising）"></a>监督（Supervising）</h3><ol>
-<li><h3 id="日志（Logging）"><a href="#日志（Logging）" class="headerlink" title="日志（Logging）"></a>日志（Logging）</h3></li>
-</ol>
-<h3 id="（Monitoring）"><a href="#（Monitoring）" class="headerlink" title="（Monitoring）"></a>（Monitoring）</h3><h3 id="（Metrics）"><a href="#（Metrics）" class="headerlink" title="（Metrics）"></a>（Metrics）</h3><h3 id="高可用（High-Availability）"><a href="#高可用（High-Availability）" class="headerlink" title="高可用（High Availability）"></a>高可用（High Availability）</h3><ol>
+<h3 id="高可用（High-Availability）"><a href="#高可用（High-Availability）" class="headerlink" title="高可用（High Availability）"></a>高可用（High Availability）</h3><ul>
 <li>部署在不同的独立的数据中心</li>
-</ol>
-<h3 id="测试（Testing）"><a href="#测试（Testing）" class="headerlink" title="测试（Testing）"></a>测试（Testing）</h3><ol>
+</ul>
+<h3 id="测试（Testing）"><a href="#测试（Testing）" class="headerlink" title="测试（Testing）"></a>测试（Testing）</h3><ul>
 <li>进行过压力测试</li>
 <li>进行网络隔离测试(I have performed network partitioning tests for my application)</li>
-</ol>
-<h3 id="备份（Backuping）"><a href="#备份（Backuping）" class="headerlink" title="备份（Backuping）"></a>备份（Backuping）</h3><ol>
+</ul>
+<h3 id="备份（Backuping）"><a href="#备份（Backuping）" class="headerlink" title="备份（Backuping）"></a>备份（Backuping）</h3><ul>
 <li>可以从备份中恢复所有数据</li>
-</ol>
-<h3 id="安全（Security）"><a href="#安全（Security）" class="headerlink" title="安全（Security）"></a>安全（Security）</h3><ol>
+</ul>
+<h3 id="安全（Security）"><a href="#安全（Security）" class="headerlink" title="安全（Security）"></a>安全（Security）</h3><ul>
 <li>参考 OWASP Top 10 进行审计</li>
 <li>TSL加密（https）</li>
 <li><p>已经在响应头上加入了有关的安全设置</p>
@@ -128,7 +164,7 @@
 <li>Public-Key-Pins</li>
 </ul>
 </li>
-</ol>
+</ul>
 <h3 id="原文地址"><a href="#原文地址" class="headerlink" title="原文地址"></a>原文地址</h3><p><a href="https://github.com/mtdvio/going-to-production/blob/master/serverside-checklist.md" target="_blank" rel="noopener">https://github.com/mtdvio/going-to-production/blob/master/serverside-checklist.md</a></p>
 
         </section>
@@ -149,7 +185,7 @@
     <div class="toc-container">
         <h1>目录</h1>
         <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#检查清单"><span class="toc-number">1.</span> <span class="toc-text">检查清单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#合法性-Legal"><span class="toc-number">1.1.</span> <span class="toc-text">合法性(Legal)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弹性-Resiliency"><span class="toc-number">1.2.</span> <span class="toc-text">弹性(Resiliency)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#负载均衡（Load-Balancing）"><span class="toc-number">1.3.</span> <span class="toc-text">负载均衡（Load Balancing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#易部署（Transparent-Deployment）"><span class="toc-number">1.4.</span> <span class="toc-text">易部署（Transparent Deployment）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监督（Supervising）"><span class="toc-number">1.5.</span> <span class="toc-text">监督（Supervising）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志（Logging）"><span class="toc-number">1.6.</span> <span class="toc-text">日志（Logging）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（Monitoring）"><span class="toc-number">1.7.</span> <span class="toc-text">（Monitoring）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（Metrics）"><span class="toc-number">1.8.</span> <span class="toc-text">（Metrics）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高可用（High-Availability）"><span class="toc-number">1.9.</span> <span class="toc-text">高可用（High Availability）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试（Testing）"><span class="toc-number">1.10.</span> <span class="toc-text">测试（Testing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#备份（Backuping）"><span class="toc-number">1.11.</span> <span class="toc-text">备份（Backuping）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安全（Security）"><span class="toc-number">1.12.</span> <span class="toc-text">安全（Security）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原文地址"><span class="toc-number">1.13.</span> <span class="toc-text">原文地址</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#检查清单"><span class="toc-number">1.</span> <span class="toc-text">检查清单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#合法性-Legal"><span class="toc-number">1.1.</span> <span class="toc-text">合法性(Legal)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弹性-Resiliency"><span class="toc-number">1.2.</span> <span class="toc-text">弹性(Resiliency)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#负载均衡（Load-Balancing）"><span class="toc-number">1.3.</span> <span class="toc-text">负载均衡（Load Balancing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#易部署（Transparent-Deployment）"><span class="toc-number">1.4.</span> <span class="toc-text">易部署（Transparent Deployment）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监督（Supervising）"><span class="toc-number">1.5.</span> <span class="toc-text">监督（Supervising）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志（Logging）"><span class="toc-number">1.6.</span> <span class="toc-text">日志（Logging）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监控（Monitoring）"><span class="toc-number">1.7.</span> <span class="toc-text">监控（Monitoring）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可度量（Metrics）"><span class="toc-number">1.8.</span> <span class="toc-text">可度量（Metrics）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高可用（High-Availability）"><span class="toc-number">1.9.</span> <span class="toc-text">高可用（High Availability）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试（Testing）"><span class="toc-number">1.10.</span> <span class="toc-text">测试（Testing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#备份（Backuping）"><span class="toc-number">1.11.</span> <span class="toc-text">备份（Backuping）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安全（Security）"><span class="toc-number">1.12.</span> <span class="toc-text">安全（Security）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原文地址"><span class="toc-number">1.13.</span> <span class="toc-text">原文地址</span></a></li></ol></li></ol>
         </div>
     </div>
     
