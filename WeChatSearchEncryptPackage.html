@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>微信搜索功能的加密功能包（golang实现） | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>微信搜索功能的加密功能包（golang实现）</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月23日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日常踩坑/">日常踩坑</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Golang" class="tag">Golang</a>
+
+
+            
+          </div>
+          <h3 id="为啥写这个代码包"><a href="#为啥写这个代码包" class="headerlink" title="为啥写这个代码包"></a>为啥写这个代码包</h3><p>由于微信搜索的接入需要进行性能测试，而我司项目惯用的PHP框架不适合用来做这样高性能的接口，所以我经过对空框架的压测之后选择用Golang的gin框架来做这个功能的开发。</p>
+<p>本来想偷懒在现有项目上（Laravel框架）开发一下就好了，但是开发完了之后发现性能测试不达标，差太多了。200QPS就已经扛不住了，本来想用xdebug分析下到底性能瓶颈在哪，但是转念一想，业务逻辑很简单啊，要出问题应该出在MySQL或者Redis等存储服务上。<br>于是重点监控了一下，MySQL和Redis，还有ES。发现都没有报警。很明显在应用层就已经卡住了。后来我下载了一个新的Laravel项目，不写任何逻辑，就压空框架。结果真的就跪了。</p>
+<p>于是决定还是用性能好的Golang来实现这个功能吧，省一点服务器的成本。</p>
+<p>但是官方示例代码没有Golang的，所以我只能参考PHP，Python和Java代码翻译成Golang的样子。这个过程也是痛苦的，毕竟自己在加解密方面的知识真的不多。</p>
+<p>翻译完成了代码包之后，其实对到底发生了什么还是不完全理解。目前也不打算深究。</p>
+<h3 id="简单的思考"><a href="#简单的思考" class="headerlink" title="简单的思考"></a>简单的思考</h3><p>说说翻译过程中的一些思考吧：</p>
+<ol>
+<li>官方示例代码写的很随意，有时候很多功能耦合到一起，这个就需要反复读代码，参考不同语言的实现，这样能比较快速的划分出独立功能。</li>
+<li>性能的考虑，虽然很细枝末节，但是对于性能要求高的情况还是值得思考一下。<ul>
+<li>比如传入参数是string的地方我到底要不要换成[]byte,返回string的地方，我要不要换成[]byte，因为golang中很多字符串的操作都是基于[]byte的，所以一开始就有这种考虑。但是问题在于一开始我也无法确定该用哪个好，只是参考示例代码来翻译。这个时候也不用过于纠结，我的策略就是先调通功能，然后在逐步优化。实时上就是最后好几个函数都把string换成了[]byte，避免在string和[]byte之间来回转换。</li>
+<li>字符串拼接只用strings.Builder来做，这个之前的文章有介绍过。</li>
+</ul>
+</li>
+<li>复用性的考虑，像这种基本和业务无关的代码其实是比较容易提取出公用方法之类的东西的。所以翻译的时候也做了这方面的努力。</li>
+</ol>
+<h3 id="代码仓库地址"><a href="#代码仓库地址" class="headerlink" title="代码仓库地址"></a>代码仓库地址</h3><p>不得不说自己功力还是很浅啊，翻译这个代码也是让我好头疼。虽然可能不算太好，我也把它开放出来吧。希望能给人提供便利。</p>
+<p><a href="https://github.com/cook-coder/wxcrypt" target="_blank" rel="noopener">https://github.com/cook-coder/wxcrypt</a></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#为啥写这个代码包"><span class="toc-number">1.</span> <span class="toc-text">为啥写这个代码包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简单的思考"><span class="toc-number">2.</span> <span class="toc-text">简单的思考</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码仓库地址"><span class="toc-number">3.</span> <span class="toc-text">代码仓库地址</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/WeChatSearchEncryptPackage.html";
+  var disqus_url = "http://wild2pro.com/WeChatSearchEncryptPackage.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
