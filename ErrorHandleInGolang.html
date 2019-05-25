@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Golang的错误处理 | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="Golang的错误处理 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Golang的错误处理</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月24日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Golang/">Golang</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#错误处理" class="tag">错误处理</a>
+
+
+            
+          </div>
+          <h2 id="Go的错误处理最佳实践"><a href="#Go的错误处理最佳实践" class="headerlink" title="Go的错误处理最佳实践"></a>Go的错误处理最佳实践</h2><h3 id="定义不同的错误变量以便于判断错误类型"><a href="#定义不同的错误变量以便于判断错误类型" class="headerlink" title="定义不同的错误变量以便于判断错误类型"></a>定义不同的错误变量以便于判断错误类型</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Error00 = errors.New(<span class="string">"This is error 00"</span>)</span><br><span class="line"><span class="keyword">var</span> Error01 = errors.New(<span class="string">"This is error 01"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="及早失败，避免嵌套判断"><a href="#及早失败，避免嵌套判断" class="headerlink" title="及早失败，避免嵌套判断"></a>及早失败，避免嵌套判断</h3><p>golang中没有异常机制，很多程序的错误是通过多返回值进行传递的。所以我们尽量要采用判断err!=nil的方式，让程序尽快失败，避免过多的if嵌套，使得程序不可读。</p>
+<h2 id="panic和recovery"><a href="#panic和recovery" class="headerlink" title="panic和recovery"></a>panic和recovery</h2><h3 id="panic"><a href="#panic" class="headerlink" title="panic"></a>panic</h3><ul>
+<li>用于不可恢复的错误</li>
+<li>退出前会执行defer指定的内容</li>
+</ul>
+<h4 id="panic与os-Exit的差别"><a href="#panic与os-Exit的差别" class="headerlink" title="panic与os.Exit的差别"></a>panic与os.Exit的差别</h4><ul>
+<li>os.Exit退出时不会调用defer指定的函数</li>
+<li>os.Exit退出时不会输出调用栈信息</li>
+</ul>
+<h3 id="recovery"><a href="#recovery" class="headerlink" title="recovery"></a>recovery</h3><p>当程序执行panic的时候，recovery可以执行类似异常中try…catch的机制。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">defer</span> <span class="function"><span class="keyword">func</span> <span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> err := recovery(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="comment">// 执行恢复程序</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125; ()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>需要说明的是不要滥用recovery，无脑原则就是：如果你不知道该怎么让程序恢复正常，那就不要使用recovery，让程序崩溃就好，这样可以避免错误被掩盖。</p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Go的错误处理最佳实践"><span class="toc-number">1.</span> <span class="toc-text">Go的错误处理最佳实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义不同的错误变量以便于判断错误类型"><span class="toc-number">1.1.</span> <span class="toc-text">定义不同的错误变量以便于判断错误类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#及早失败，避免嵌套判断"><span class="toc-number">1.2.</span> <span class="toc-text">及早失败，避免嵌套判断</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#panic和recovery"><span class="toc-number">2.</span> <span class="toc-text">panic和recovery</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#panic"><span class="toc-number">2.1.</span> <span class="toc-text">panic</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#panic与os-Exit的差别"><span class="toc-number">2.1.1.</span> <span class="toc-text">panic与os.Exit的差别</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#recovery"><span class="toc-number">2.2.</span> <span class="toc-text">recovery</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/ErrorHandleInGolang.html";
+  var disqus_url = "http://wild2pro.com/ErrorHandleInGolang.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
