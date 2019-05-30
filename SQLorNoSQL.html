@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>SQL Or NoSQL | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>SQL Or NoSQL</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月30日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/翻译/">翻译</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#database" class="tag">database</a>
+
+
+            
+          </div>
+          <p>这篇文章主要是分享Twin Prime团队在数据库选型上的经验和教训。</p>
+<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>事情开始是这样的，原有的日志信息存储在文件中，是JSON格式的字符串。我们想要保持日志原有的样子不变并且存储到数据库中。这样的话NoSQL数据库似乎是正确的选择。我们需要数据库能够帮我们达成以下目的：</p>
+<ol>
+<li><p>内部测试和调试</p>
+</li>
+<li><p>性能分析</p>
+</li>
+<li><p>面向用户的控制面板</p>
+</li>
+<li><p>长久存储</p>
+</li>
+</ol>
+<p>并且我们认为一个数据库就能应对所有这些需求。</p>
+<h2 id="选型"><a href="#选型" class="headerlink" title="选型"></a>选型</h2><p>MongoDB似乎就是默认的选项：免费，容易安装，社区很庞大，很脚本语言紧密关联，丰富的查询语言。我们不用操心它的性能问题，因为它有很好的可伸缩性。</p>
+<p>开始的一段时间里，所有事情看起来都挺好。</p>
+<p>随着数据的增多，我们发现聚合查询开始变慢。我们非常的依赖聚合查询来出具性能报告和查询导致性能变差的问题根源。结果开起来是MongoDB并没有针对这种场景进行优化。它没有针对“group-by”查询的索引。随后我们意识到我们选择了错误的数据库，但是要弃用它已经不是件简单的事情了。MongoDB的查询语言是专有的，与其他NoSQL数据库不兼容，所以迁移看起来会很痛苦。</p>
+<p>我们花了些时间在MongoDB上建立了我们自己的聚合层。基本思路就是通过把历史数据先聚合成一些统计记录来减小原来的数据库的大小，这样可以更快的展示结果。我们意识到这种方法会损失一部分数据，并且需要渐进试的聚合方法：最新的一部分数据保持原样存储，用于调试；稍微老一些的数据以天为单位聚合，随着时间推移再把这些数据以月为单位聚合。但是这个方法并不好。最终当所有的数据库消费者都不爽的时候，我们决定不再妥协下去。并且，这个问题看起来很常见，我们相信有人一定为此打造了成熟的工具。所以我们开始寻找MongoDB的替代品。</p>
+<p>这回我们设置了一个简单的性能测试来测试所有的备选方案。我们以下面的格式写了100万条数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">network-type(enum), device-type(enum), speed(int), size(int)</span><br></pre></td></tr></table></figure>
+<p>然后我们执行聚合查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT DEVICE_TYPE, COUNT(*), AVG(speed) FROM logs GROUP-BY DEVICE_TYPE;</span><br></pre></td></tr></table></figure>
+<p>我们需要控制台应用在执行这样的查询时是亚秒级的响应。然而MongoDB需要查过100秒来完成这个测试。</p>
+<p>随后，我们探索了其他NoSQL数据库：</p>
+<p>ElasticSearch，看来比MongoDB快20多倍。但是它仍然没能满足我们亚秒级的需求。并且我们不想在学习另外一种专用查询语言。</p>
+<p>New Relic，它的性能使我们感到非常的惊讶：我们可以在一个控制台上设置9个组件，每个组件都聚合100万不同的数据，整个页面的刷新速度居然是在亚秒级的。唉，可惜的是New Relic的解决方案是托管在第三方的云服务，我们需要把我们的数据保存在自己的服务器上。</p>
+<p>Splunk，擅长与处理机器生成的日志，但是性能达不到要求。</p>
+<p>然后我们去Hadoop/Cassandra的世界里寻找了很多种方法，然而我们得到的印象就是，他们的聚合都是分批完成的，但是我们需要的是实时的报告。</p>
+<p>我们还看了OLAP世界里的东西，得到的印象就是它们大部分是企业级的工具，并不能适应云端的自由伸缩。</p>
+<h2 id="教训"><a href="#教训" class="headerlink" title="教训"></a>教训</h2><p>当我们的MongoDB已经慢到不能用的时候，一些有趣并且意外的事情发生了。人们仍然需要一个性能分析的ad-hoc的解决方案（抱歉，这个实在翻译不来）。他们开始把MongoDB里的一部分数据存放到本地的临时存储SQLite里。很明显，这不是一个可伸缩的方案，但是这件事给我们上了重要的一课：</p>
+<ol>
+<li>每个人都会SQL。它不像MongoDB的查询语言是专用的。在我们的组织里SQL到处都是。从组织的灵活性考虑，我们更容易招聘到懂SQL的人而不是用过MongoDB的。</li>
+<li>SQL已经成熟的应用了几十年了。任何与之竞争的语言都要花很大的力气才能逐步解决概念上的一些挑战，这里面包含整个数据应用的生命周期。MongoDB和它的NoSQL伙伴显然还没有准备好。</li>
+<li>“no schema”概念的优势比我们原本预期的要小很多。表结构在产品初期是会经常改变，但是随后它就会定型。所以把我们的JSON格式存储到一个定义好的表里并不难。</li>
+<li>支持SQL/ODBC的数据库有很多。如果你的应用是在SQL/ODBC之上编写的，那么替换应用后面的数据库真的不难。这正是我们在摆脱MongoDB时遇到的问题。</li>
+<li>拥有多个数据备份也许不是一个那么糟糕的主意。如果不同的工具需要用来应对不同的场景，那么为什么要坚持想要找到一个具有一刀切功能的工具呢。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>所以我们暂时决定我们的下一个数据库要兼容SQL。如何满足性能测试的要求我们尚不清楚。Postgres和MySQL基本只能到到我们设置的最低要求。随后我们找到了正确的Google姿势：分析型数据库。它给我们带来了一个完全符合业务需求的数据库家族。其中一个厉害的数据库就是Vertica。内部来看Vertica是一个列式数据库，但是从外部看它有一套成熟的SQL接口。Vertica提供了一个高级的企业产品，好不费力的就可以达到我们的性能要求。我们发现它优秀的响应时长完全可以打造一个新的交互工具，这是其他数据库做不到的。最后我们决定使用Redshift，是另一个列式存储数据库，它对于我们所有的业务来说有更好的适应性。得益于SQL兼容性，我们不需要重写我们的数据应用。迁移终于变得简单了。</p>
+<p>从我们的经验中可以学到什么呢？</p>
+<p>第一，在数据技术选型的时候，看到“酷”特性之外的东西更重要，并且容易扩容。针对你的应用场景作出明智的选择。</p>
+<p>其次，针对你选择的数据库要有一个退出策略，因为你的数据需求是很可能会变化的。</p>
+<blockquote>
+<p>原文地址： <a href="https://engineering.salesforce.com/sql-or-nosql-9eaf1d92545b" target="_blank" rel="noopener">https://engineering.salesforce.com/sql-or-nosql-9eaf1d92545b</a></p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起因"><span class="toc-number">1.</span> <span class="toc-text">起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选型"><span class="toc-number">2.</span> <span class="toc-text">选型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#教训"><span class="toc-number">3.</span> <span class="toc-text">教训</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/SQLorNoSQL.html";
+  var disqus_url = "http://wild2pro.com/SQLorNoSQL.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
