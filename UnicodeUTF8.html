@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Unicode和UTF8的关系 | 写程序的厨子</title>
+  <meta name="keywords" content="Unicode,UTF-8 | 程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="Unicode和UTF-8的关系 | 野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Unicode和UTF8的关系</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月01日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/计算机基础/">计算机基础</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#字符串" class="tag">字符串</a>
+
+
+            
+          </div>
+          <p>开发中必然会涉及到字符编码的问题，而现在UTF8是很常用的字符编码，那么它到底为何物呢，今天我就来说说他。</p>
+<h2 id="ASCII"><a href="#ASCII" class="headerlink" title="ASCII"></a>ASCII</h2><p>相信大家对ASCII码肯定不会陌生，这里我就做一个简化版的解释，不严谨哈。<br>ASCII码可以理解为英文世界的字符编码表，一个字节的长度就可以囊括所有的字母数字和其他符号。<br>比如字母A对应为二进制的01000001。</p>
+<h2 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h2><p>那么其他国家咋办呢，我们不熟悉的法文，德文，还有我们最熟悉的中文。计算机世界就产生了其他的编码来表示它们，并导致了我们头疼的乱码问题。这时，就需要一个统一的编码来让大家相互认识，于是便有了Unicode编码规范（规范是我自己理解的方式，英文原文是code point），可以理解为Unicode就是世界上所有字符的定义规范（计算机世界里的全球字典）。</p>
+<p>Unicode只是规定了每个符号对应的二进制数值，而没有规定在计算机的物理上如何存储（ASCII码就是一个字节可以存储所有值）。</p>
+<h2 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h2><p>而UTF-8就是Unicode规范的一种实现方式（还有例如UTF-16，UTF-32）。它可以根据字符编码的值，通过使用1~4个字节的长度来存储。非常灵活，不浪费空间。</p>
+<h3 id="UTF-8的规定如下："><a href="#UTF-8的规定如下：" class="headerlink" title="UTF-8的规定如下："></a>UTF-8的规定如下：</h3><ol>
+<li>单字节符号，字节的第一位设为0，后面7位为这个符号的Unicode编码。对于英文字母，Unicode编码和ASCII码是相同的。</li>
+<li>对于n字节符号，第一个字节的前n位都设为1，第n+1位设为0，后面所有字节的前两位统一设为10。其他的没有提到的二进制位就是用来存放Unicode编码的。</li>
+</ol>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Unicode符号范围</th>
+<th>UTF-8编码方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000 0000 - 0000 007F</td>
+<td>0xxx xxxx</td>
+</tr>
+<tr>
+<td>0000 0080 - 0000 07FF</td>
+<td>110x xxxx 10xx xxxx</td>
+</tr>
+<tr>
+<td>0000 0800 - 0000 FFFF</td>
+<td>1110 xxxx 10xx xxxx 10xx xxxx</td>
+</tr>
+<tr>
+<td>0001 0000 - 0010 FFFF</td>
+<td>1111 0xxx 10xx xxxx 10xx xxxx 10xx xxxx</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a>举例说明</h3><p><strong>中</strong>字的Unicode编码为4E2D，在表格中的第三行范围内，我们把16进制的Unicode转化为二进制的Unicode得到：0100 1110 0010 1101。然后把这个二进制串从最后一位开始，按照第三行格式的最后一位依次往前填入, 得到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1110 xxxx 10xx xxxx 10xx xxxx // UTF-8的存储格式</span><br><span class="line">     0100   11 1000   10 1101 // 中字的Unicode值</span><br><span class="line">1110 0100 1011 1000 1010 1101 // 填空所得结果，即UTF-8的值</span><br></pre></td></tr></table></figure>
+<p>所以<strong>中</strong>字的UTF-8编码为<em>E4B8AD</em></p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><p>下面我们通过Golang来验证上面的计算。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestZhong</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	zhong := <span class="string">"中"</span></span><br><span class="line">	unicodeOfZhong := []<span class="keyword">rune</span>(zhong)</span><br><span class="line">	t.Log(<span class="string">"汉字："</span>, zhong)</span><br><span class="line">	t.Logf(<span class="string">"中的Unicode：%x"</span>, unicodeOfZhong[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    utf8OfZhong := <span class="string">"\xE4\xB8\xAD"</span></span><br><span class="line">    t.Logf(<span class="string">"UTF-8输出编码值: %x"</span>, utf8OfZhong)</span><br><span class="line">	t.Logf(<span class="string">"UTF-8输出汉字: %s"</span>, utf8OfZhong)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="输出结果"><a href="#输出结果" class="headerlink" title="输出结果"></a>输出结果</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">汉字： 中</span><br><span class="line">中的Unicode：4e2d</span><br><span class="line">UTF-8输出编码值: e4b8ad</span><br><span class="line">UTF-8输出汉字: 中</span><br></pre></td></tr></table></figure>
+<p>可以看到代码输出结果与我们手动计算的值一致，这回应该再也不会傻傻分不清楚Unicode和UTF-8的关系了吧。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ASCII"><span class="toc-number">1.</span> <span class="toc-text">ASCII</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unicode"><span class="toc-number">2.</span> <span class="toc-text">Unicode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UTF-8"><span class="toc-number">3.</span> <span class="toc-text">UTF-8</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#UTF-8的规定如下："><span class="toc-number">3.1.</span> <span class="toc-text">UTF-8的规定如下：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#举例说明"><span class="toc-number">3.2.</span> <span class="toc-text">举例说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#代码实现"><span class="toc-number">3.2.1.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#输出结果"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">输出结果</span></a></li></ol></li></ol></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/UnicodeUTF8.html";
+  var disqus_url = "http://wild2pro.com/UnicodeUTF8.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
