@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>从MySQL到HBase | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>从MySQL到HBase</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月04日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/翻译/">翻译</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#数据库选型" class="tag">数据库选型</a>
+
+
+            
+          </div>
+          <p>Imgur是MySQL的重度用户。MySQL从一开始就成为了我们技术栈的一部分。然而，随着我们的发展，在MySQL上开发新功能变得越来越困难。比如我们最近的一次功能升级，我们重新实现了通知系统，并且把数据从MySQL迁移到了HBase。在接下来的文章中，我会介绍我们是如何用HBase来解决我们的问题的，还有我们用到的HBase的特性。</p>
+<p>先稍微说下背景情况，以前我们支持两种通知类型：消息和回复，都存储在MySQL。这次升级，我们决定支持更多的通知类型。并且引入了一些规则来规定什么时候来发送通知。这样的改变让我们很难在之前的模型上继续开发，所以我们重新开始开发。</p>
+<p>一开始，在设计阶段，我们希望继续保持MySQL作为主要存储。我们合并了一些表和查询，来防止我们出现巨大的错误。我们不得不为没一个通知类型创建一个列，之后要添加一种类型的话就意味着要改表。我们的select查询需要和其他应用的表进行join。我们设计了一个可以用的架构，但是我们牺牲了解偶，简单，可伸缩，可扩展的特性。</p>
+<p>我们其中的一些通知要求只是在到达里程碑的时候进行发送。比如，如果一篇文章达到了100分，Imgur会通知用户。我们不希望在这中间的99次去打扰用户。所以，在大规模的数据中，我们怎么知道一篇文章达到了100分？</p>
+<p>考虑到MySQL是我们文章的主要存储，一种实现的方法就是在文章表里加一个分数列，然后通过另外一个查询来获取数据，判断是否达到100分。这个实现有些问题。分数增长和查询是一个竞争条件，可能会导致两个客户端都认为他们到达了100分，然后发送两条通知。另外一个问题就是产生了而外的查询。每一次递增，我们都需要查询分数，增加了MySQL的负载。</p>
+<p>虽然MySQL在技术上可以实现，通过使用事务和读锁。但是作为我们网站上一个高频的应用，锁会消耗很多的资源。考虑到我们已经在其他地方使用了HBase，于是我们把这个功能切换到了用HBase来实现。下面介绍，我们是如何使用HBase来强化我们的通知系统，在大规模下保持了实时性。</p>
+<h3 id="稀疏列（Sparse-columns）"><a href="#稀疏列（Sparse-columns）" class="headerlink" title="稀疏列（Sparse columns）"></a>稀疏列（Sparse columns）</h3><p>在Imgur里，每条通知是由一个或多个事件组成。下面的图片可以看到我们的通知是如何展示的。</p>
+<p>可以看到，每一条通知是由一个或多个事件组成。我们把一条通知对应的写到HBase的一行里，同时每一个事件对应到不同的列，每一个列都是一个计数器。这样的模型让我们的列非常的稀疏，不同类型的通知有不同类型的事件。在MySQL里，这样做的话就意味着有很多为NULL值的列存在。我们没有被禁锢在一个严格定义的表结构里，所以我们可以在现有的模型上轻松的添加通知类型。</p>
+<h3 id="原子自增（Atomic-increments）"><a href="#原子自增（Atomic-increments）" class="headerlink" title="原子自增（Atomic increments）"></a>原子自增（Atomic increments）</h3><p>HBase有原子自增的操作，可以在自增的同时返回自增后的新值。这虽然是个简单的特性，但是我们的实现就是依赖这个特性的。这让我们在客户端的通知发送逻辑变得轻量：自增之后当且仅当数量超过里程碑的时候会发送通知。没有额外的调用开销。在一些场景中，我们有了两个计数的地方。一个在MySQL文章表里，一个在HBase里。技术上来说，他们可能会出现数据同步问题，但是这是一个我们在改进的案例。<br>在HBase里做自增的另一个好处就是可以让我们把通知的逻辑和应用逻辑解偶。我们需要知道就只是计数器是否超过了设置的阈值。比如，我们不再需要知道怎么去获取文章，然后拿到计数的数据。HBase让我们用更通用的方式解决了我们的问题。</p>
+<h3 id="扫描表的速度快"><a href="#扫描表的速度快" class="headerlink" title="扫描表的速度快"></a>扫描表的速度快</h3><p>我们同时还维护了一个二级的排序表。它存放了通知的引用，并且以他们最后一次发送的逆时间戳排序的。当用户打开他们的通知下拉列表的时候，我们通过用户ID查询到他最新的消息。我们还可以通过使用扫描过滤器支持扫描不同类型的通知。</p>
+<h3 id="其他优势"><a href="#其他优势" class="headerlink" title="其他优势"></a>其他优势</h3><p>使用HBase让我们得到了很多其他的好处，比如线性扩展和副本。我们可以把数据发送到另外一个集群来跑很多任务。我们还得到了强一致性的保证，这对保证我们的通知系统在达到里程碑的时候发且只发一次消息极其重要。我们可以保证我们所知道的HBase有行级的强一致性。虽然我们将来可能会用到versioning功能，但是即使不用它，对我们来说HBase依然是一个很好的选择。</p>
+<p>Imgur通知系统是一个年轻的项目，我们会继续改进它。随着它的成长我们也从中学习到新的知识，同时我希望把我们用开源软件开发的产品分享给大家。</p>
+<blockquote>
+<p>原文地址: <a href="https://medium.com/imgur-engineering/imgur-notifications-from-mysql-to-hbase-9dba6fc44183" target="_blank" rel="noopener">https://medium.com/imgur-engineering/imgur-notifications-from-mysql-to-hbase-9dba6fc44183</a></p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#稀疏列（Sparse-columns）"><span class="toc-number">1.</span> <span class="toc-text">稀疏列（Sparse columns）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原子自增（Atomic-increments）"><span class="toc-number">2.</span> <span class="toc-text">原子自增（Atomic increments）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#扫描表的速度快"><span class="toc-number">3.</span> <span class="toc-text">扫描表的速度快</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他优势"><span class="toc-number">4.</span> <span class="toc-text">其他优势</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/MySQLToHBase.html";
+  var disqus_url = "http://wild2pro.com/MySQLToHBase.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

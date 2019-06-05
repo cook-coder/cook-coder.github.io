@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Jaccard相似度 | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Jaccard相似度</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月05日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日常踩坑/">日常踩坑</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#文本相似度" class="tag">文本相似度</a>
+
+
+            
+          </div>
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我们网站有个功能是评价房子的户型的，开放给经纪人使用，但是呢，经纪人为了蹭展示机会，就疯狂的复制粘贴，这样就导致大量无用的信息出现，影响用户体验。之前还好，偶尔有几个人，刷个几十条的算多的了，也就个别处理一下，打电话告知不要做这种操作就结束了。但是最近出现了有预谋有组织的刷榜活动，这就尴尬了，所以必须想办法堵住这种行为。</p>
+<h2 id="探索过程"><a href="#探索过程" class="headerlink" title="探索过程"></a>探索过程</h2><p>其实之前也想过解决方法，想通过比对文本相似度来做，但是想的有点多，一查资料都是NLP，机器学习之类的。一看就头大，三人小团队，业务都做不过来，还搞AI，想太多了吧。于是也就先放下了。但是呢，之前的调研也给我脑袋里留下了一些必要的概念，比如余弦相似度，逆文档频率等等。<br>今天遇到这种大量刷的事情又让我想重新思考这方面的解决方法，于是我又查阅了一些资料。最终锁定在余弦相似度和Jaccard相似度上。</p>
+<h2 id="简要介绍相似度"><a href="#简要介绍相似度" class="headerlink" title="简要介绍相似度"></a>简要介绍相似度</h2><p>这里只阐述我个人的简单的理解，并不是严格的定义。</p>
+<h3 id="余弦相似度"><a href="#余弦相似度" class="headerlink" title="余弦相似度"></a>余弦相似度</h3><p>把文本向量化之后求向量之间的夹角的余弦值，1说明完全相似，-1说明完全相反。<br>应用在带语义分析的场景中会更适合。</p>
+<h3 id="Jaccard相似度"><a href="#Jaccard相似度" class="headerlink" title="Jaccard相似度"></a>Jaccard相似度</h3><p>就是把两个集合的交集除以两个集合的并集。<br>简单的看集合中的元素是不是大量相同。</p>
+<h2 id="解决方案选型"><a href="#解决方案选型" class="headerlink" title="解决方案选型"></a>解决方案选型</h2><p>从上面的相似度解释来看，我们的产品似乎用余弦相似度更能很好的解决问题。<br>但是，有两个重要的问题要考虑：</p>
+<ol>
+<li>经实验发现单纯的进行余弦相似度的计算并不能很好的进行语义的判别，可能还需要机器学习相关的领域知识才能很好的解决问题，而这就远远超出了我们团队的开发能力。</li>
+<li>就算实现了从语义上限制，那么会导致这个限制过于严苛，从业务上来说也会影响发布评论的积极性。</li>
+</ol>
+<p>所以我决定使用Jaccard相似度进行判断即可，从它的计算方法上就可以看出，它只关心相同的元素多不多，也就是说两条评论一样的词是不是很多。抛开了语义层面的东西。</p>
+<h3 id="Jaccard相似度PHP实现"><a href="#Jaccard相似度PHP实现" class="headerlink" title="Jaccard相似度PHP实现"></a>Jaccard相似度PHP实现</h3><p>代码出处：<a href="https://github.com/angeloskath/php-nlp-tools/blob/master/src/NlpTools/Similarity/JaccardIndex.php" target="_blank" rel="noopener">https://github.com/angeloskath/php-nlp-tools/blob/master/src/NlpTools/Similarity/JaccardIndex.php</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The similarity returned by this algorithm is a number between 0,1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">similarity</span><span class="params">(&amp;$A, &amp;$B)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $a = array_fill_keys($A,<span class="number">1</span>);</span><br><span class="line">    $b = array_fill_keys($B,<span class="number">1</span>);</span><br><span class="line">    $intersect = count(array_intersect_key($a,$b));</span><br><span class="line">    $union = count(array_fill_keys(array_merge($A,$B),<span class="number">1</span>));</span><br><span class="line">    <span class="keyword">return</span> $intersect/$union;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码很简单就不多解释了，需要说明的就是<code>$A</code>和<code>$B</code>，他们就是两条文本进行分词之后的数组。</p>
+<p>分词工具，我们使用了结巴分词。</p>
+<p>这样一个简单的文本相似度分析功能就实现了。既不会太Low也不会高大上到难以实现。<br>作为一个普通的技术人，大部分时候技术是服务于业务的。<br>而是否去实现某个业务功能，以什么方式实现。更多的时候我们要考虑边际成本和边际收益。</p>
+<p>够用就好，不是妥协，而是做出合理的决定。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#探索过程"><span class="toc-number">2.</span> <span class="toc-text">探索过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#简要介绍相似度"><span class="toc-number">3.</span> <span class="toc-text">简要介绍相似度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#余弦相似度"><span class="toc-number">3.1.</span> <span class="toc-text">余弦相似度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Jaccard相似度"><span class="toc-number">3.2.</span> <span class="toc-text">Jaccard相似度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决方案选型"><span class="toc-number">4.</span> <span class="toc-text">解决方案选型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Jaccard相似度PHP实现"><span class="toc-number">4.1.</span> <span class="toc-text">Jaccard相似度PHP实现</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/JaccardSimilarity.html";
+  var disqus_url = "http://wild2pro.com/JaccardSimilarity.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
