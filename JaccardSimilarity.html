@@ -90,18 +90,14 @@
           <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我们网站有个功能是评价房子的户型的，开放给经纪人使用，但是呢，经纪人为了蹭展示机会，就疯狂的复制粘贴，这样就导致大量无用的信息出现，影响用户体验。之前还好，偶尔有几个人，刷个几十条的算多的了，也就个别处理一下，打电话告知不要做这种操作就结束了。但是最近出现了有预谋有组织的刷榜活动，这就尴尬了，所以必须想办法堵住这种行为。</p>
 <h2 id="探索过程"><a href="#探索过程" class="headerlink" title="探索过程"></a>探索过程</h2><p>其实之前也想过解决方法，想通过比对文本相似度来做，但是想的有点多，一查资料都是NLP，机器学习之类的。一看就头大，三人小团队，业务都做不过来，还搞AI，想太多了吧。于是也就先放下了。但是呢，之前的调研也给我脑袋里留下了一些必要的概念，比如余弦相似度，逆文档频率等等。<br>今天遇到这种大量刷的事情又让我想重新思考这方面的解决方法，于是我又查阅了一些资料。最终锁定在余弦相似度和Jaccard相似度上。</p>
 <h2 id="简要介绍相似度"><a href="#简要介绍相似度" class="headerlink" title="简要介绍相似度"></a>简要介绍相似度</h2><p>这里只阐述我个人的简单的理解，并不是严格的定义。</p>
-<h3 id="余弦相似度"><a href="#余弦相似度" class="headerlink" title="余弦相似度"></a>余弦相似度</h3><p>把文本向量化之后求向量之间的夹角的余弦值，1说明完全相似，-1说明完全相反。<br>应用在带语义分析的场景中会更适合。</p>
+<h3 id="余弦相似度"><a href="#余弦相似度" class="headerlink" title="余弦相似度"></a>余弦相似度</h3><p>把文本向量化之后求向量之间的夹角的余弦值，1说明完全相同，-1说明完全相反。</p>
 <h3 id="Jaccard相似度"><a href="#Jaccard相似度" class="headerlink" title="Jaccard相似度"></a>Jaccard相似度</h3><p>就是把两个集合的交集除以两个集合的并集。<br>简单的看集合中的元素是不是大量相同。</p>
-<h2 id="解决方案选型"><a href="#解决方案选型" class="headerlink" title="解决方案选型"></a>解决方案选型</h2><p>从上面的相似度解释来看，我们的产品似乎用余弦相似度更能很好的解决问题。<br>但是，有两个重要的问题要考虑：</p>
-<ol>
-<li>经实验发现单纯的进行余弦相似度的计算并不能很好的进行语义的判别，可能还需要机器学习相关的领域知识才能很好的解决问题，而这就远远超出了我们团队的开发能力。</li>
-<li>就算实现了从语义上限制，那么会导致这个限制过于严苛，从业务上来说也会影响发布评论的积极性。</li>
-</ol>
-<p>所以我决定使用Jaccard相似度进行判断即可，从它的计算方法上就可以看出，它只关心相同的元素多不多，也就是说两条评论一样的词是不是很多。抛开了语义层面的东西。</p>
+<h2 id="解决方案选型"><a href="#解决方案选型" class="headerlink" title="解决方案选型"></a>解决方案选型</h2><p>其实我们要应对的问题是经纪人的疯狂复制粘贴。<br>可能被限制了之后会想着稍微改动一下在发布，而这种情况Jaccard相似度也能很好的处理。只要我设置一个能够接受的相似度阈值就可以灵活控制了。<br>所以我决定使用Jaccard相似度进行判断即可，从它的计算方法上就可以看出，它只关心相同的元素多不多，也就是说两条评论一样的词是不是很多。</p>
+<p>比如我设置阈值为0.5，这意味着什么呢？<br>就是说他如果复制一条内容有10个字，那么在不删除原来内容的情况下，他要再写10个字以上，并且这些字不能是前面重复的。<br>是的，你没想错，我就是抛弃了分词，直接以字为单位进行计算。</p>
 <h3 id="Jaccard相似度PHP实现"><a href="#Jaccard相似度PHP实现" class="headerlink" title="Jaccard相似度PHP实现"></a>Jaccard相似度PHP实现</h3><p>代码出处：<a href="https://github.com/angeloskath/php-nlp-tools/blob/master/src/NlpTools/Similarity/JaccardIndex.php" target="_blank" rel="noopener">https://github.com/angeloskath/php-nlp-tools/blob/master/src/NlpTools/Similarity/JaccardIndex.php</a></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The similarity returned by this algorithm is a number between 0,1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">similarity</span><span class="params">(&amp;$A, &amp;$B)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $a = array_fill_keys($A,<span class="number">1</span>);</span><br><span class="line">    $b = array_fill_keys($B,<span class="number">1</span>);</span><br><span class="line">    $intersect = count(array_intersect_key($a,$b));</span><br><span class="line">    $union = count(array_fill_keys(array_merge($A,$B),<span class="number">1</span>));</span><br><span class="line">    <span class="keyword">return</span> $intersect/$union;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>代码很简单就不多解释了，需要说明的就是<code>$A</code>和<code>$B</code>，他们就是两条文本进行分词之后的数组。</p>
-<p>分词工具，我们使用了结巴分词。</p>
+<p>分词就是按字分开就好了。(原本是用结巴分词的，但是太耗时，业务也不是非常需要分词，所以弃用了。)</p>
 <p>这样一个简单的文本相似度分析功能就实现了。既不会太Low也不会高大上到难以实现。<br>作为一个普通的技术人，大部分时候技术是服务于业务的。<br>而是否去实现某个业务功能，以什么方式实现。更多的时候我们要考虑边际成本和边际收益。</p>
 <p>够用就好，不是妥协，而是做出合理的决定。</p>
 
