@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Keep Calm And Logical | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Keep Calm And Logical</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月12日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/闲话/">闲话</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#思考" class="tag">思考</a>
+
+
+            
+          </div>
+          <p>今天工作上有件事情引发了我的反思，事情是这样的：<br>产品需求给到我们开发，然后我们就根据产品需求去了解实现方案，提出了一些问题。<br>因为这个产品功能(聊天功能)横跨了两个独立的业务系统（不合理，原因就不说了，很复杂），那么我们自然是要考虑如何解耦，并且能够合理的实现产品需求。</p>
+<p>我刚整理完产品本身的逻辑问题，提给需求方，还没来的及整理技术实现方案。然后我先找到了另一个业务系统的负责人，询问他是否知道这个需求了，蛋疼的是需求方一直未告知他们有这个需求。然后我就把需求发给他，然后简单的说了下明显的系统耦合的坑，并说明了我会来出具技术方案（因为主要功能再我们这边，产品也是从我们这边的系统出发设计的），然后再一起讨论。</p>
+<p>但是我还没构思出大概思路呢，他就去和领导反应这个需求的坑，并提出用H5来实现一个聊天功能，嵌入到手机APP里，实现解耦。这让我瞬间有点懵逼，因为把我叫过去当面沟通了嘛，我当时有点蒙，听起来好像挺合理。但是我总觉得哪里不对。</p>
+<p>我把我不成熟的想法也说了一下，然而并没有得到领导的认同。领导反而觉得H5的方案挺好。</p>
+<p>那我就说我下来想想吧，其实这件事让我有点窝火的是：</p>
+<ol>
+<li>明明说了我出具方案来讨论，他偏偏先去搅一棍子，提出方案没问题，至少是不是应该先和我沟通一下，这样会比较合理，临时把我叫去，冒出一个方案，真的有点蒙。</li>
+<li>其次，我们是认真读了需求之后并针对现有技术来整理方案，提出问题；他就扫了一眼就提出一个方案，这个方案的可行性自己都没有认真想过。</li>
+</ol>
+<p>所以我当时心里就想：妈的，真会甩锅。领导居然还不认我这边的想法。确实闹心。</p>
+<p>我有点愤愤不平的回到工位，然后就在想明明自己认真了研究了需求，为啥说的话得不到认可？<br>然后我进行了反思：</p>
+<ol>
+<li>主观上来说，对方打了我一个措手不及，没想到会突然来讨论这个问题。</li>
+<li>客观上，我这边确实没有明确的技术方案，只是我临时勾勒出来的一个大体方案，而且这个方案还会增加技术实现成本。所以得不到认可是正常的。</li>
+<li>对方提出方案的时候，我并没有保持冷静，第一时间分析清楚对方的漏洞在哪里。反而被代入到了那个方案中，觉得似乎是种合理的方式。</li>
+</ol>
+<p>本来我也是有点不高兴，想让产品接着去和领导去核对需求，因为根本呢上需求就来自于他们。</p>
+<p>但是转念一想，不能就这么随便，不然自己的努力也就都白费了，自己整理的问题，摸索的方案，什么都打水漂了，还比不上人家一个H5的方案。</p>
+<p>所以我主动和产品先沟通了一下需求的问题，做了充分的了解后，我觉得以我们技术团队的名义起草一份产品修改意见和技术实现方案，然后发送给相关方。大家一起来评估。</p>
+<p>这份方案的原则就是要保持可观和理性。</p>
+<p>所以我真的就认真论证了H5方案的可行性，最后发现了致命缺陷，无法推送离线消息，就会导致产品逻辑不成立，而如果要强行实现离线推送，又会导致解耦逻辑不成立，与方案提出的前提相违背。写到这里的时候我就心里有了底气。</p>
+<p>接下来我就围绕着解耦这个事情，一条一条的写了产品修改意见和理由。<br>然后给出了技术实现方案，画了一个时序图，能表达清楚产品逻辑如何跑通的同时直观的展现了技术架构和个别技术细节。</p>
+<p>最后，我给出了产品建议里参考的竞品功能出处，还有两个暂时无法确定的问题，最重要的就是技术方案的实现依据（把相关的参考文档附上）。</p>
+<p>今天下班之前还没弄完，所以我决定明天修改之后我再发出邮件。并且邮件最后我会说明：欢迎产品和技术提出修改意见，并且详细论述该方案。</p>
+<p>毕竟我不能再为别人的一句话买单了。这也算是成长路上的一个坑吧，时刻保持清醒的头脑，说起来容易，做起来真的难。<br>我不敢保证以后能反应快，思路清晰，当场驳回，但是我至少找到了真确解决问题的方法，可以让相互间的沟通变得高效合理。<br>最后啰嗦一句，情绪是最没用的东西，保持冷静和清晰的思路才是最重要的。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/KeepCalmAndLogical.html";
+  var disqus_url = "http://wild2pro.com/KeepCalmAndLogical.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
