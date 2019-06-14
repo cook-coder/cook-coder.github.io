@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Go语言中的错误返回 | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Go语言中的错误返回</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月14日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/翻译/">翻译</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Golang" class="tag">Golang</a>
+
+
+            
+          </div>
+          <p>在Go语言中有两种基础的错误返回方式：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Config)</span> <span class="title">Save</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> err := c.checkDefault(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> err</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Config)</span> <span class="title">Save</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> err := c.checkDefault(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> fmt.Errorf(<span class="string">"can't find default config file: %v"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一种方式把原始的错误栈顶部信息传递出来，但是没有加入上下文信息。因此，你的Save方法可能会以打印出“file not found:default.cfg”结束，而不告诉调用者为什么它要尝试打开default.cfg。</p>
+<p>第二种方式允许你添加上下文到错误中，所以上面的错误可以变成这样：“can’t find default config file: file not found: default.cfg”。这样错误就有了一个上下文环境，但是不幸的是，它同时也创建了一个只有原始错误文字解释的全新错误。这对人来说很友好，但是对代码错误处理来说没有帮助。</p>
+<p>如果你使用第一种代码实现，在调用之后，可以用os.IsNotExist()来判断是否有一个not found错误，然后根据情况创建一个文件。</p>
+<p>如果使用第二种代码实现，错误类型就不是os.Open返回的那种了，因此os.IsNotExist不会返回true。使用fmt.Errorf掩盖了原始错误。</p>
+<p>有些时候掩盖原始错误可能是好的，如果你不想调用方依赖于实现细节。然而，大部分时候你可能需要给你的调用方提供审视你返回的错误的能力，并且对错误作出处理。然而，这样又会使得错误信息没有上下文，所以调用你的代码的人就得费些脑力看下具体实现，搞清楚这个错误到底是什么意思。</p>
+<p>对于上面这两种方案来说，有一个更严重的问题是当你debug的时候，你根本不知道错误从哪里来的。没有完整的错误栈，甚至连哪个文件的哪一行都不知道。除非你非常小心的维护，让你的错误信息容易捕捉，否则，debug的时候是非常的困难的。我都数不清有多少次去搜索错误格式信息，然后希望自己猜到的是对的格式。</p>
+<p>没办法，这就是Go的世界，所以作为开发者我们应该怎么做呢？当然是写一个更好的错误处理包啊。并且别人已经写了很多错误处理的包了。大部分都封装了原始的错误，所以你可以添加上下文信息并且保持了原始的错误信息类型，所以你可以用os.IsNotExist之类的方法来检查错误。在Canonical，Juju组就写了一个这种错误处理包（实际上是3个，然后让他们自由竞争，最后只有一个胜出，留了下来），地址：<a href="https://github.com/juju/errors" target="_blank" rel="noopener">https://github.com/juju/errors</a>.</p>
+<p>因此，你可以像这样返回错误：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Config)</span> <span class="title">Save</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> err := c.checkDefault(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> errors.Annotatef(err, <span class="string">"can't find default config file"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码返回了一个错误处理包创建的新的错误，并且在原始错误的错误消息之前加上了一段用户给的错误消息（就像fmt.Errorf一样），但是你可以用<code>errors.Cause(err)</code>来访问到原始的错误。因此你可以使用<code>os.IsNotExist(errors.Cause(err))</code>来检查错误。</p>
+<p>然而，这个包和其它的错误处理包一样被同一个问题折磨：你的包只能理解自己定义的错误，其它代码无法正确解析你的错误（因为它们不会用errors.Cause来获取原始错误）。现在你又回到了开头：你的错误就像fmt.Errorf创建的错误一样对第三方是不透明的。</p>
+<p>关于这个问题我也没有明确的答案。它是Go语言的标准错误类型天生的特性（或者说缺陷）。</p>
+<p>很明显，如果你在写一个独立的package给很多其他的人使用的话，不要使用第三方的错误包。你的使用者不太可能会使用同样的错误处理包，所以他们无法开箱即用，并且这会给你的代码加入不必要的依赖。在两种返回错误的方式中抉择是一件艰难的事情。一方面，很难知道什么时候原始错误中的信息是对你的调用者有用的。另一方面，使用fmt.Errorf创建的错误可以把难以琢磨的错误变得明显。</p>
+<p>如果你在写一个应用，并且你可以控制大部分的package，那么使用错误处理包就有用了。但是仍然存在你的自定义错误会传递到第三方的风险，而他们不知道如何解析这个错误。另外，任何第三方错误处理包都增加了代码的复杂度，你必须记得调用了<code>errors.Cause(err)</code>来获取原始错误，否则判断就会出差错。</p>
+<p>你必须在这三个选项中选择一个错误的返回方式。请小心的选择。有时候你可能会选择了一个让你更难受的方式。</p>
+<blockquote>
+<p>原文地址：<a href="https://npf.io/2015/10/errors/" target="_blank" rel="noopener">https://npf.io/2015/10/errors/</a></p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/ReturningErrors.html";
+  var disqus_url = "http://wild2pro.com/ReturningErrors.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
