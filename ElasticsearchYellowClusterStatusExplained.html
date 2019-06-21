@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>关于Elasticsearch集群Yellow状态的解释 | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>关于Elasticsearch集群Yellow状态的解释</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月21日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Elasticsearch/">Elasticsearch</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Elasticsearch" class="tag">Elasticsearch</a>
+
+
+            
+          </div>
+          <p>在开始之前，让我来一起回顾一下Elasticsearch的术语：一个Elasticsearch的集群（cluster）是由一个或多个节点（node）组成的。每个节点（node）包含一个或多个索引（index），索引（index）又分离为多个分片（shard）。Elasticsearch把分片（shard）的拷贝叫做副本（replica）。这些分片（shard）和副本（replica）放置在集群的不同节点（node）上。</p>
+<p>我们可以使用Cluster Health API来检查集群的健康状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET http://localhost:9200/_cluster/health?pretty=true</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">      &quot;cluster_name&quot; : &quot;asgard&quot;,</span><br><span class="line">      &quot;status&quot; : &quot;yellow&quot;,</span><br><span class="line">      &quot;timed_out&quot; : false,</span><br><span class="line">      &quot;number_of_nodes&quot; : 1,</span><br><span class="line">      &quot;number_of_data_nodes&quot; : 1,</span><br><span class="line">      &quot;active_primary_shards&quot; : 5,</span><br><span class="line">      &quot;active_shards&quot; : 5,</span><br><span class="line">      &quot;relocating_shards&quot; : 0,</span><br><span class="line">      &quot;initializing_shards&quot; : 0,</span><br><span class="line">      &quot;unassigned_shards&quot; : 5</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>Elasticsearch提供了一个易用的集群健康分类，就像交通灯一样。这里做一个简单的解释：</p>
+<ul>
+<li>RED: 糟糕。有部分或者全部主要分片（shard）没有准备好。</li>
+<li>YELLOW：Elasticsearch放置好了所有的主要分片（shard），但是有一些或者所有的副本（replica）没有放置好。</li>
+<li>GREEN： 很好。你的集群（cluster）完全在工作。Elasticsearch在组成集群（cluster）的机器上放置好了所有的分片（shard）和副本（replica）。</li>
+</ul>
+<p>现在，我们的集群（cluster）健康状态是<strong>yellow</strong>, 意味着分片（shard）的副本（replica）没有被完全放置好。为什么会这样？因为当前的集群只有一个节点，所以副本（replica）保持在未分配的状态只是简单的由于没有其他节点（node）可以放置它们。我们可以通过添加另外一个节点到集群中来修复这个问题。这个新的节点（node）会加入到你的集群（cluster）中，然后Elasticsearch会开始放置副本（replica）到这个节点（node）里。当Elasticsearch完成复制，设置好了所有的副本（replica）之后，我们在来看健康检查的结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET http://localhost:9200/_cluster/health?pretty=true</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">       &quot;cluster_name&quot;:&quot;asgard&quot;,</span><br><span class="line">       &quot;status&quot;:&quot;green&quot;,</span><br><span class="line">       &quot;timed_out&quot;:false,</span><br><span class="line">       &quot;number_of_nodes&quot;:2,</span><br><span class="line">       &quot;number_of_data_nodes&quot;:2,</span><br><span class="line">       &quot;active_primary_shards&quot;:5,</span><br><span class="line">       &quot;active_shards&quot;:10,</span><br><span class="line">       &quot;relocating_shards&quot;:0,</span><br><span class="line">       &quot;initializing_shards&quot;:0,</span><br><span class="line">       &quot;unassigned_shards&quot;:0</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这个做一个关于<strong>yellow</strong>状态的解释：当一个集群（cluster）的状态是yellow的时候，除了你的副本（replica）没有满足规定的条件以外，所有的东西都OK。请求仍然可以被成功的处理，但是当你的服务器宕机的时候，你就有丢失数据的风险。除非你的集群（cluster）有足够的节点来存放副本（replica），或者你调整了索引（index）的副本（replica）设置，状态才会变为GREEN。</p>
+<blockquote>
+<p> 原文地址：<a href="http://chrissimpson.co.uk/elasticsearch-yellow-cluster-status-explained.html" target="_blank" rel="noopener">http://chrissimpson.co.uk/elasticsearch-yellow-cluster-status-explained.html</a></p>
+<p>这篇文章比较老了，新一些的版本的健康检查命令已经变成了/_cat/health?v了，不过这不重要，我们主要是学到分析yellow状态的方法，并尝试修复它。</p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/ElasticsearchYellowClusterStatusExplained.html";
+  var disqus_url = "http://wild2pro.com/ElasticsearchYellowClusterStatusExplained.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
