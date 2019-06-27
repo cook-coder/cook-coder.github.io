@@ -17,7 +17,7 @@
   <link rel="icon" href="/favicon.ico">
   
     
-  <title>调研不仔细，事后打脸啪啪啪 | 写程序的厨子</title>
+  <title>错误的编码-在循环里执行SQL | 写程序的厨子</title>
   <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
   <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
   <link rel="stylesheet" href="/style.css">
@@ -65,13 +65,13 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>调研不仔细，事后打脸啪啪啪</h1>
+          <h1>错误的编码-在循环里执行SQL</h1>
           <div class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年05月31日</time>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月27日</time>
             
               | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/日常踩坑/">日常踩坑</a>
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>
   </div>
 
 
@@ -82,15 +82,25 @@
                   <i class="fa fa-tag" aria-hidden="true"></i>
                 
                
-  <a href="/tags/#全文索引" class="tag">全文索引</a>
+  <a href="/tags/#错误编码" class="tag">错误编码</a>
 
 
             
           </div>
-          <p>本来想用MongoDB来做我们的房源列表功能.<br>主要是评分功能的影响，可能需要替换ES，评分是实时变化的，所以ES每次update都需要重建索引就不适合应用到这样的场景。</p>
-<p>但是本来以为MongoDB的全文索引可以应对输入框那种的关键词搜索应该没有问题，但是…它真的不行。分词是基于空格的，所以会遗漏很多结果。这样的结果我们肯定是不能接受的。</p>
-<p>由于我们之前已经做了一些迁移的开发，所以很有可能就白做了，我对此负有责任。这次的事情也给了我一个教训，什么问题都不能想当然的认为是怎样怎样的，一定要先充分的调研。充分不是空口号，而是要实实在在去做的事情。</p>
-<p>不过今天逛阿里云的网站的时候发现了一个OpenSearch的服务，看起来是很适合我们现在的业务需求。搜索功能强大，能适应频繁的数据更新。接下来就是周一去试用一下看看，这回不能再掉坑了。</p>
+          <p>不要在循环里面执行SQL，这是一个众所周知的原则了。</p>
+<p>但是，现实情况中往往还就有这种填不完的坑。</p>
+<p>我也不避讳，自己曾经也犯过这种错误。</p>
+<p>如今，又被前人的代码坑了一次。当这种错误实践遇到疯狂的爬虫就等于宕机。</p>
+<p>为什么会这么写，猜测大概有这样几种情况：</p>
+<ol>
+<li>根本没有意识到不能这么做。</li>
+<li>通过简单的估计，觉得就那么几个循环而已，不会有问题。</li>
+<li>管它有没有问题，反正出了问题再说。</li>
+</ol>
+<p>第一种情况就不说了，因为他会从错误中学习的。<br>第二种情况，就是犯懒，并且懒到没有认真估计。要真想范这个懒，那就评估好该功能的使用频率和外层循环最大值。懒也要懒的有点依据。不过原则上不建议犯懒。<br>第三种情况那就更不用说了，因为教不会。</p>
+<p>其实我没想到会在这个时候写这样一篇没什么技术含量的Tip，但是这个错误真的是一个频繁发生的问题。</p>
+<p>我希望能有更多的小白能记住：不要在循环里执行SQL。</p>
+<p>挖坑也要挖的像样，别搞这种太Low坑，容易被喷。</p>
 
         </section>
     </article>
@@ -114,8 +124,8 @@
 <script type="text/javascript">
   /* * * CONFIGURATION VARIABLES * * */
   var disqus_shortname = "wild2pro";
-  var disqus_identifier = "http://wild2pro.com/DoNotCountOnMongoDBFullTextSearch.html";
-  var disqus_url = "http://wild2pro.com/DoNotCountOnMongoDBFullTextSearch.html";
+  var disqus_identifier = "http://wild2pro.com/StupidCode.html";
+  var disqus_url = "http://wild2pro.com/StupidCode.html";
 
   isAgent(getDisqus)
 
