@@ -65,6 +65,45 @@
   <div class="posts-list">
     
       <section>
+        <a href="/HttpProxyInGolangInLessThan100LinesOfCode.html">
+          <h3 class="post-head">
+            100行Golang代码实现HTTP(S)代理
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <p>我们的目标是实现一个HTTP和HTTPS的代理服务。HTTP的处理其实就是解析请求，把请求发送到目标服务器，然后读取响应再发送到客户端。我们需要的就是Golang内置的HTTP服务器和客户端（net/http）。HTTPS有点不一样，因为需要用到HTTP CONNECT隧道的技术。首先客户端通过使用HTTP CONNECT方法发送请求来建立客户端和服务器端的隧道。当这个由两个TCP链接组成的隧道建立好了之后，客户端开始和目标服务器TLS握手，来建立安全的链接，随后发送请求和接收响应。</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月30日</time>
+          
+            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/翻译/">翻译</a>
+  </div>
+
+
+
+          
+          
+            <span class="seperator">|</span>
+             
+                <i class="fa fa-tag" aria-hidden="true"></i>
+              
+             
+  <a href="/tags/#HTTP Proxy" class="tag">HTTP Proxy</a>
+
+
+          
+        </div>
+      </section>
+    
+      <section>
         <a href="/CountingBits.html">
           <h3 class="post-head">
             LeetCode338解题思路
@@ -409,45 +448,6 @@
               
              
   <a href="/tags/#HTTP" class="tag">HTTP</a>
-
-
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/KeepCalmAndLogical.html">
-          <h3 class="post-head">
-            Keep Calm And Logical
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>今天工作上有件事情引发了我的反思，事情是这样的：<br>产品需求给到我们开发，然后我们就根据产品需求去了解实现方案，提出了一些问题。<br>因为这个产品功能(聊天功能)横跨了两个独立的业务系统（不合理，原因就不说了，很复杂），那么我们自然是要考虑如何解耦，并且能够合理的实现产品需求。</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月12日</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/闲话/">闲话</a>
-  </div>
-
-
-
-          
-          
-            <span class="seperator">|</span>
-             
-                <i class="fa fa-tag" aria-hidden="true"></i>
-              
-             
-  <a href="/tags/#思考" class="tag">思考</a>
 
 
           

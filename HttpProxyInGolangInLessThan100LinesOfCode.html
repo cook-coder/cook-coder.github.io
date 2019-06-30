@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang=zh-CN,en,default>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131387196-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-131387196-1');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>100行Golang代码实现HTTP(S)代理 | 写程序的厨子</title>
+  <meta name="keywords" content="程序员进阶,野生程序员进阶,软件开发,互联网,写程序的厨子">
+  <meta name="description" content="野生菜鸡程序员的进阶之路, 记录自己的学习和成长.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>写程序的厨子</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>100行Golang代码实现HTTP(S)代理</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019年06月30日</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/翻译/">翻译</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#HTTP Proxy" class="tag">HTTP Proxy</a>
+
+
+            
+          </div>
+          <p>我们的目标是实现一个HTTP和HTTPS的代理服务。HTTP的处理其实就是解析请求，把请求发送到目标服务器，然后读取响应再发送到客户端。我们需要的就是Golang内置的HTTP服务器和客户端（net/http）。HTTPS有点不一样，因为需要用到HTTP CONNECT隧道的技术。首先客户端通过使用HTTP CONNECT方法发送请求来建立客户端和服务器端的隧道。当这个由两个TCP链接组成的隧道建立好了之后，客户端开始和目标服务器TLS握手，来建立安全的链接，随后发送请求和接收响应。</p>
+<h2 id="证书"><a href="#证书" class="headerlink" title="证书"></a>证书</h2><p>我们的代理将会是一个HTTPS服务器（当使用 —proto https的时候），所以我们需要证书和私钥。根据这篇文字的目的，我们就使用自签名的证书好了。通过下面的脚本可以生成证书：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"><span class="keyword">case</span> `uname -s` <span class="keyword">in</span></span><br><span class="line">    Linux*)     sslConfig=/etc/ssl/openssl.cnf;;</span><br><span class="line">    Darwin*)    sslConfig=/System/Library/OpenSSL/openssl.cnf;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line">openssl req \</span><br><span class="line">    -newkey rsa:2048 \</span><br><span class="line">    -x509 \</span><br><span class="line">    -nodes \</span><br><span class="line">    -keyout server.key \</span><br><span class="line">    -new \</span><br><span class="line">    -out server.pem \</span><br><span class="line">    -subj /CN=localhost \</span><br><span class="line">    -reqexts SAN \</span><br><span class="line">    -extensions SAN \</span><br><span class="line">    -config &lt;(cat <span class="variable">$sslConfig</span> \</span><br><span class="line">        &lt;(<span class="built_in">printf</span> <span class="string">'[SAN]\nsubjectAltName=DNS:localhost'</span>)) \</span><br><span class="line">    -sha256 \</span><br><span class="line">    -days 3650</span><br></pre></td></tr></table></figure></p>
+<p>需要在你的操作系统中设置信任该证书。在OS X中，可以通过Keychain Access设置 —  <a href="https://tosbourn.com/getting-os-x-to-trust-self-signed-ssl-certificates/" target="_blank" rel="noopener">https://tosbourn.com/getting-os-x-to-trust-self-signed-ssl-certificates/</a>.</p>
+<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>我们将使用内置的HTTP服务器和客户端来支持HTTP。代理的角色是处理请求，并发送到目标服务器，最后把响应发回给客户端。<br><img src="/img/blogs/others/proxy.png" alt=""></p>
+<h2 id="HTTP-CONNECT隧道"><a href="#HTTP-CONNECT隧道" class="headerlink" title="HTTP CONNECT隧道"></a>HTTP CONNECT隧道</h2><p>假设客户端想要通过HTTPS或者WebSoket来和服务器通信。客户端知道在使用代理。由于客户端需要和服务器端建立安全的链接（HTTPS）或者使用基于TCP的其他协议（WebSocket），所以简单的HTTP请求/响应流程就无法使用。这时，需要用到HTTP CONNECT方法。它可以告诉代理服务器和目标服务器建立TCP连接，然后从客户端代理TCP流。通过这种方式，代理服务器不会打断SSL，只是简单的在客户端和服务器端之间传输数据，并且它们之间可以建立安全的连接。<br><img src="/img/blogs/others/http_connect.png" alt=""></p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"crypto/tls"</span></span><br><span class="line">    <span class="string">"flag"</span></span><br><span class="line">    <span class="string">"io"</span></span><br><span class="line">    <span class="string">"log"</span></span><br><span class="line">    <span class="string">"net"</span></span><br><span class="line">    <span class="string">"net/http"</span></span><br><span class="line">    <span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleTunneling</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    dest_conn, err := net.DialTimeout(<span class="string">"tcp"</span>, r.Host, <span class="number">10</span>*time.Second)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        http.Error(w, err.Error(), http.StatusServiceUnavailable)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    w.WriteHeader(http.StatusOK)</span><br><span class="line">    hijacker, ok := w.(http.Hijacker)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        http.Error(w, <span class="string">"Hijacking not supported"</span>, http.StatusInternalServerError)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    client_conn, _, err := hijacker.Hijack()</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        http.Error(w, err.Error(), http.StatusServiceUnavailable)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">go</span> transfer(dest_conn, client_conn)</span><br><span class="line">    <span class="keyword">go</span> transfer(client_conn, dest_conn)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">transfer</span><span class="params">(destination io.WriteCloser, source io.ReadCloser)</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> destination.Close()</span><br><span class="line">    <span class="keyword">defer</span> source.Close()</span><br><span class="line">    io.Copy(destination, source)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handleHTTP</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">    resp, err := http.DefaultTransport.RoundTrip(req)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        http.Error(w, err.Error(), http.StatusServiceUnavailable)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line">    copyHeader(w.Header(), resp.Header)</span><br><span class="line">    w.WriteHeader(resp.StatusCode)</span><br><span class="line">    io.Copy(w, resp.Body)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">copyHeader</span><span class="params">(dst, src http.Header)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> k, vv := <span class="keyword">range</span> src &#123;</span><br><span class="line">        <span class="keyword">for</span> _, v := <span class="keyword">range</span> vv &#123;</span><br><span class="line">            dst.Add(k, v)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> pemPath <span class="keyword">string</span></span><br><span class="line">    flag.StringVar(&amp;pemPath, <span class="string">"pem"</span>, <span class="string">"server.pem"</span>, <span class="string">"path to pem file"</span>)</span><br><span class="line">    <span class="keyword">var</span> keyPath <span class="keyword">string</span></span><br><span class="line">    flag.StringVar(&amp;keyPath, <span class="string">"key"</span>, <span class="string">"server.key"</span>, <span class="string">"path to key file"</span>)</span><br><span class="line">    <span class="keyword">var</span> proto <span class="keyword">string</span></span><br><span class="line">    flag.StringVar(&amp;proto, <span class="string">"proto"</span>, <span class="string">"https"</span>, <span class="string">"Proxy protocol (http or https)"</span>)</span><br><span class="line">    flag.Parse()</span><br><span class="line">    <span class="keyword">if</span> proto != <span class="string">"http"</span> &amp;&amp; proto != <span class="string">"https"</span> &#123;</span><br><span class="line">        log.Fatal(<span class="string">"Protocol must be either http or https"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    server := &amp;http.Server&#123;</span><br><span class="line">        Addr: <span class="string">":8888"</span>,</span><br><span class="line">        Handler: http.HandlerFunc(<span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">            <span class="keyword">if</span> r.Method == http.MethodConnect &#123;</span><br><span class="line">                handleTunneling(w, r)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                handleHTTP(w, r)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;),</span><br><span class="line">        <span class="comment">// Disable HTTP/2.</span></span><br><span class="line">        TLSNextProto: <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="function"><span class="keyword">func</span><span class="params">(*http.Server, *tls.Conn, http.Handler)</span>),</span></span><br><span class="line"><span class="function">    &#125;</span></span><br><span class="line"><span class="function">    <span class="title">if</span> <span class="title">proto</span> == "<span class="title">http</span>"</span> &#123;</span><br><span class="line">        log.Fatal(server.ListenAndServe())</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        log.Fatal(server.ListenAndServeTLS(pemPath, keyPath))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里展示的代码不是生产环境可用的。比如，它缺少逐段传输的处理能力，在两个链接复制数据的时候设置超时时间，还有其他net/http包里的超时时间。— <a href="https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/" target="_blank" rel="noopener">这里是net/http所有的超时设置</a></p>
+</blockquote>
+<p>当收到请求的时候，我们的代理服务器会有两种处理方式：处理HTTP或者处理HTTP CONNECT隧道。实现代码如下：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">http.HandlerFunc(<span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> r.Method == http.MethodConnect &#123;</span><br><span class="line">        handleTunneling(w, r)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        handleHTTP(w, r)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>处理HTTP的方法handleHTTP是自解释的，所以我们重点关注一下处理隧道的代码。第一部分是关于处理和目标服务器的连接的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dest_conn, err := net.DialTimeout(<span class="string">"tcp"</span>, r.Host, <span class="number">10</span>*time.Second)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    http.Error(w, err.Error(), http.StatusServiceUnavailable)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"> &#125;</span><br><span class="line"> w.WriteHeader(http.StatusOK)</span><br></pre></td></tr></table></figure>
+<p>接下来，我们有一部分是劫持连接的代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hijacker, ok := w.(http.Hijacker)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        http.Error(w, <span class="string">"Hijacking not supported"</span>, http.StatusInternalServerError)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    client_conn, _, err := hijacker.Hijack()</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        http.Error(w, err.Error(), http.StatusServiceUnavailable)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><em><a href="https://golang.org/pkg/net/http/#Hijacker" target="_blank" rel="noopener">Hijacker interface</a>可以让我们接管连接。然后调用者需要对管理连接负责，（HTTP库将不在管理该连接）。</em></p>
+<p>一旦我们拥有了两个TCP连接(客户端-&gt;代理, 代理-&gt;目标服务器)，我们需要启动隧道：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">go</span> transfer(dest_conn, client_conn)</span><br><span class="line"><span class="keyword">go</span> transfer(client_conn, dest_conn)</span><br></pre></td></tr></table></figure></p>
+<p>在这两个goroutine中，数据有两个传输方向：一个是从客户端到服务器，一个是从服务器到客户端。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>测试我们的代理，你可以使用Chrome:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; Chrome --proxy-server=https://localhost:8888</span><br></pre></td></tr></table></figure></p>
+<p>或者Curl:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; curl -Lv --proxy https://localhost:8888 --proxy-cacert server.pem https://google.com</span><br></pre></td></tr></table></figure></p>
+<p><em>curl需要编译的时候加入HTTPS-proxy的支持</em></p>
+<h2 id="HTTP-2"><a href="#HTTP-2" class="headerlink" title="HTTP/2"></a>HTTP/2</h2><p>在我们的代理服务中，HTTP/2的支持被故意的放弃了，因为劫持是不可能的。<br>具体看这个<a href="https://github.com/golang/go/issues/14797#issuecomment-196103814" target="_blank" rel="noopener">#14797</a></p>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>请看<a href="https://medium.com/@mlowicki/https-proxies-support-in-go-1-10-b956fb501d6b" target="_blank" rel="noopener">https://medium.com/@mlowicki/https-proxies-support-in-go-1-10-b956fb501d6b</a></p>
+<blockquote>
+<p>原文地址：<a href="https://medium.com/@mlowicki/http-s-proxy-in-golang-in-less-than-100-lines-of-code-6a51c2f2c38c" target="_blank" rel="noopener">https://medium.com/@mlowicki/http-s-proxy-in-golang-in-less-than-100-lines-of-code-6a51c2f2c38c</a></p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>加载评论框需要科学上网</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#证书"><span class="toc-number">1.</span> <span class="toc-text">证书</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP"><span class="toc-number">2.</span> <span class="toc-text">HTTP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-CONNECT隧道"><span class="toc-number">3.</span> <span class="toc-text">HTTP CONNECT隧道</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-number">4.</span> <span class="toc-text">实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试"><span class="toc-number">5.</span> <span class="toc-text">测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-2"><span class="toc-number">6.</span> <span class="toc-text">HTTP/2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更新"><span class="toc-number">7.</span> <span class="toc-text">更新</span></a></li></ol>
+        </div>
+        <div>
+          <img src="/img/wx_pub.jpg" alt="avatar">
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "wild2pro";
+  var disqus_identifier = "http://wild2pro.com/HttpProxyInGolangInLessThan100LinesOfCode.html";
+  var disqus_url = "http://wild2pro.com/HttpProxyInGolangInLessThan100LinesOfCode.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank" rel="nofollow">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
